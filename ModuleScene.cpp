@@ -182,7 +182,6 @@ bool ModuleScene::Start()
 	SECTCambioBigEstr.AddRoadToSector(RectaMedEstr);
 	SECTCambioBigEstr.AddRoadToSector(RectaMedEstr);
 
-	//Hola que ashe ap o ad
 	SECTRectaMedEstr.SetGameObj(ROAD_X, 0, 0, 0, true, road, false);
 	SECTRectaMedEstr.type = estr;
 	SECTRectaMedEstr.AddRoadToSector(RectaMedEstr);
@@ -279,12 +278,16 @@ bool ModuleScene::Start()
 	
 
 
-	//Create GameObjects
+	//Player
 	GOList.push_back(MainPlayer = new Player());
 	MainPlayer->SetGameObj(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, -15, 0, true, player, false);
-	SDL_Rect rectplayer1 = { 0,0,26,46 };
-	SDL_Rect rectplayer2 = { 5,9,30,47 };
-	MainPlayer->SetPlayer(App->collider->CreateCol(rectplayer1, player, MainPlayer), rectplayer1, rectplayer2, mainsprites);
+	SDL_Rect colidle = { 0,0,26,46 };
+	SDL_Rect idle = { 138,256,30,44 };
+	SDL_Rect colturn1 = { 0,0,32,43 };
+	SDL_Rect turn1 = { 101,263,32,43 };
+	SDL_Rect colturn2 = { 0,0,53,32 };
+	SDL_Rect turn2 = { 0,328,53,32 };
+	MainPlayer->SetPlayer(App->collider->CreateCol(colidle, player, MainPlayer), colidle, colturn1, colturn2, idle, turn1, turn2, mainsprites);
 
 
 	//DEBUG

@@ -16,44 +16,92 @@ Player::~Player()
 {
 }
 
-void Player::SetPlayer(Collider* collider, SDL_Rect cuadro, SDL_Rect cuadrotex, SDL_Texture* Tex)
+void Player::SetPlayer(Collider* collider, SDL_Rect colidlex, SDL_Rect colturn1x, SDL_Rect colturn2x, SDL_Rect Idlex, SDL_Rect Turn1x, SDL_Rect Turn2x, SDL_Texture* Tex)
 {
 	col = collider;
-	Rect = cuadro;
-	TextureRect = cuadrotex;
+	Rect = colidlex;
+	TextureRect = Idlex;
+	Idle = Idlex;
+	Turn1 = Turn1x;
+	Turn2 = Turn2x;
 	MainTex = Tex;
+	colidle = colidlex;
+	colturn1 = colturn1x;
+	colturn2 = colturn2x;
+
 }
 
 void Player::Update()
 {
-	
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+	switch (ActualState)
 	{
-		if (xvel > 0)
-			xvel = 0;
-		xvel = xvel - 10;
-		if (xvel < -10000)
-			xvel = -10000;
+	case Player::idle:
+		turnvel = 0;
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+			ActualState = turnleft;
+		else if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+			ActualState = turnrigth;
+
+		break;
+
+	case Player::turnrigth:
+		
+		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP)
+		{
+			ActualState = idle;
+			break;
+		}
+			
+		if (turnvel < 0)
+			turnvel = 0;
+		turnvel = turnvel + 1000 * App->timer->deltatime;
+		if (turnvel > 10000)
+			turnvel = 10000;
+		break;
+
+	case Player::turnleft:
+		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP)
+		{
+			ActualState = idle;
+			break;
+		}
+		if (turnvel > 0)
+			turnvel = 0;
+		turnvel = turnvel - 1000 * App->timer->deltatime;
+		if (turnvel < -10000)
+			turnvel = -10000;
+		break;
+	case Player::dead:
+		break;
+	default:
+		break;
+	}
+	
+	
+	
+	/*if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+	{
+		if (turnvel > 0)
+			turnvel = 0;
+		turnvel = turnvel - 10;
+		if (turnvel < -10000)
+			turnvel = -10000;
 	}
 	else if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
 	{ 
-		if (xvel < 0)
-			xvel = 0;
-		xvel = xvel + 10 ;
-		if (xvel > 10000)
-			xvel = 10000;
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_Y) == KEY_DOWN)
+		if (turnvel < 0)
+			turnvel = 0;
+		turnvel = turnvel + 10 ;
+		if (turnvel > 10000)
+			turnvel = 10000;
+	}*/
+	if (App->input->GetKey(SDL_SCANCODE_Y) == KEY_DOWN)
 	{
 		RenderCol = !RenderCol;
 	}
 	
-	else
-	{
-		xvel = 0;
-	}
 	
-	posp.x = posp.x + (xvel * App->timer->deltatime);
+	posp.x = posp.x + (turnvel * App->timer->deltatime);
 	
 	//Collider
 	col->rect.x = posp.x - (col->rect.w / 2);
