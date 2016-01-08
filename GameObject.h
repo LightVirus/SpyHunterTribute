@@ -15,8 +15,8 @@ public:
 	bool visible = false;
 	GameObject* parent = NULL;
 	item_type type;
-	float xoffset;
-	float yoffset;
+	float xoffset = 0;
+	float yoffset = 0;
 	bool deleteme = false;
 
 

@@ -281,17 +281,11 @@ bool ModuleScene::Start()
 	//Player
 	GOList.push_back(MainPlayer = new Player());
 	MainPlayer->SetGameObj(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, -15, 0, true, player, false);
-	SDL_Rect colidle = { 0,0,26,46 };
-	SDL_Rect idle = { 138,256,30,44 };
-	SDL_Rect colturn1 = { 0,0,32,43 };
-	SDL_Rect turn1 = { 101,263,32,43 };
-	SDL_Rect colturn2 = { 0,0,53,32 };
-	SDL_Rect turn2 = { 0,328,53,32 };
-	MainPlayer->SetPlayer(App->collider->CreateCol(colidle, player, MainPlayer), colidle, colturn1, colturn2, idle, turn1, turn2, mainsprites);
+
+	MainPlayer->SetPlayer(App->collider->CreateCol(MainPlayer->colidle, player, MainPlayer), mainsprites);
 
 
-	//DEBUG
-	//SECTRectBig.CreateColOnSector();
+	
 	
 	
 	

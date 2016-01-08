@@ -16,13 +16,15 @@ public:
 	Collider* col = NULL;
 	float turnvel = 100.0f;
 	SDL_Rect TextureRect;
-	SDL_Rect Rect;
+	SDL_Rect ColRect;
 	SDL_Texture* MainTex = NULL;
 	SDL_Rect Idle;
 	SDL_Rect colidle;
-	SDL_Rect Turn1;
+	SDL_Rect Turn1R;
+	SDL_Rect Turn1L;
+	SDL_Rect Turn2L;
+	SDL_Rect Turn2R;
 	SDL_Rect colturn1;
-	SDL_Rect Turn2;
 	SDL_Rect colturn2;
 	bool derecha = false;
 	bool izquierda = false;
@@ -31,7 +33,7 @@ public:
 	bool outroad = false;
 	bool firing = false;
 	bool turbo = false;
-	void SetPlayer(Collider* collider, SDL_Rect colidlex, SDL_Rect colturn1x, SDL_Rect colturn2x, SDL_Rect Idlex, SDL_Rect Turn1x, SDL_Rect Turn2x, SDL_Texture* Tex);
+	void SetPlayer(Collider* collider, SDL_Texture* Tex);
 	void RenderGameObj();
 	void Update();
 	void OnCollisionEnter(GameObject* ColWith);
