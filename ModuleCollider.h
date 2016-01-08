@@ -29,6 +29,6 @@ public:
 	//bool Collision(SDL_Rect a, SDL_Rect b);
 	void UpdateCol();
 	bool CleanUp();
-	update_status PreUpdate();
+	update_status Update();
 };
 

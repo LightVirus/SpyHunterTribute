@@ -21,6 +21,7 @@ public:
 	bool Start();
 	bool CleanUp();
 	update_status Update();
+	update_status PostUpdate();
 	void const GoSound();
 	float roadvel = 500.0f;
 	//void ControlToPlayer(controls cont, bool state);

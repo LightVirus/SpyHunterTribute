@@ -4,7 +4,9 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "Globals.h"
+#include "Timer.h"
 #include "SDL/include/SDL.h"
+#include "Point.h"
 
 class Player :
 	public GameObject
@@ -22,12 +24,11 @@ public:
 	SDL_Rect colidle;
 	SDL_Rect Turn1R;
 	SDL_Rect Turn1L;
-	SDL_Rect Turn2L;
-	SDL_Rect Turn2R;
 	SDL_Rect colturn1;
-	SDL_Rect colturn2;
-	bool derecha = false;
-	bool izquierda = false;
+	Timer deadtimer;
+	fPoint colOffset;
+	bool Colthisframe = false;
+	bool Collastframe = false;
 	bool RenderCol = false;
 	bool boat = false;
 	bool outroad = false;
@@ -36,9 +37,10 @@ public:
 	void SetPlayer(Collider* collider, SDL_Texture* Tex);
 	void RenderGameObj();
 	void Update();
+	void PostUpdate();
 	void OnCollisionEnter(GameObject* ColWith);
 
-	enum PlayerState
+	enum ControlState
 	{
 		idle,
 		turnrigth,
@@ -46,7 +48,9 @@ public:
 		dead
 	};
 
-	PlayerState ActualState = idle;
+
+	ControlState ControlActualState = idle;
+	item_type CollisionState = null;
 
 };
 

@@ -62,9 +62,9 @@ void const ModuleTimer::FPSMax()
 }
 
 
-Timer ModuleTimer::createtimer(float sec)
+/*Timer ModuleTimer::createtimer(float sec)
 {
-	Timer count = Timer();
+	Timer count;
 	count.endtime = Uint32(sec * 1000);
 	count.timerstart = SDL_GetTicks();
 	return count;
@@ -82,4 +82,4 @@ bool ModuleTimer::UpdateTimers(Timer &time)
 	}
 	return time.timerended;
 
-}
+}*/

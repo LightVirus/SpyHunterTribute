@@ -394,6 +394,12 @@ update_status ModuleScene::Update()
 	return UPDATE_CONTINUE;
 }
 
+update_status ModuleScene::PostUpdate()
+{
+	MainPlayer->PostUpdate();
+	return UPDATE_CONTINUE;
+}
+
 void const ModuleScene::GoSound()
 {
 	App->sound->PlaySoundE(effect1);

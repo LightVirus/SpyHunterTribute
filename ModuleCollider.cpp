@@ -186,7 +186,7 @@ bool ModuleCollider::CleanUp()
 	return true;
 }
 
-update_status ModuleCollider::PreUpdate()
+update_status ModuleCollider::Update()
 {
 	//Delete any marked colliders
 	DelMarkedCol();
