@@ -14,6 +14,7 @@ Player::Player()
 	 Turn1R = { 101,263,32,43 };
 	 Turn1L = { 101,307,32,43 };
 	 colturn1 = { 0,0,32,43 };
+	 deadrect = { 365,0,32,32 };
 }
 
 
@@ -94,6 +95,44 @@ void Player::Update()
 		break;
 	default:
 		break;
+	}
+	
+	//Speed and destination of x
+	if (ControlActualState != dead)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN)
+		{
+			turbo = !turbo;
+		}
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+		{
+			yspeed += 10.0f * App->timer->deltatime;
+			if (yspeed >= 1.0f)
+				yspeed = 1.0f;
+		}
+		else
+		{
+			yspeed -= 10.0f * App->timer->deltatime;
+			if (yspeed <= 0.0f)
+				yspeed = 0.0f;
+		}
+
+		if (yspeed >= 0.5f)
+		{
+			if (!turbo)
+				yDest = (SCREEN_HEIGHT / 2) - 50;
+			else
+				yDest = (SCREEN_HEIGHT / 2) - 200;
+		}
+		else
+		{
+			yDest = (SCREEN_HEIGHT / 2) + 150;
+		}
+		fPoint tempdes;
+		tempdes.SetToZero();
+		tempdes.y = yDest;
+		tempdes.x = posp.x;
+		posp.NextPoint(tempdes, 1 * App->timer->deltatime);
 	}
 	
 	

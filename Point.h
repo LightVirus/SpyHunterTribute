@@ -9,7 +9,7 @@ template<class TYPE>
 class Point
 {
 public:
-
+	float distance;
 	TYPE x, y;
 
 	Point()
@@ -86,12 +86,14 @@ public:
 
 	Point& NextPoint(const Point& dest, float speed)
 	{
-		x = x + speed;
-		y = y + speed;
-		if (x > dest.x)
-			x = dest.x;
-		if (y > dest.y)
-			y = dest.y;
+		float xDistance = dest.x - x;
+		float yDistance = dest.y - y;
+		distance = sqrt((xDistance*xDistance) + (yDistance*yDistance));
+		if (distance > 1.0)
+		{
+			x += xDistance * speed;
+			y += yDistance * speed;
+		}
 
 		return(*this);
 	}

@@ -17,6 +17,7 @@ public:
 
 	Collider* col = NULL;
 	float turnvel = 100.0f;
+	float yspeed = 0.0f;
 	SDL_Rect TextureRect;
 	SDL_Rect ColRect;
 	SDL_Texture* MainTex = NULL;
@@ -25,15 +26,19 @@ public:
 	SDL_Rect Turn1R;
 	SDL_Rect Turn1L;
 	SDL_Rect colturn1;
+	SDL_Rect deadrect;
 	Timer deadtimer;
 	fPoint colOffset;
+	float yDest;
+	
 	bool Colthisframe = false;
 	bool Collastframe = false;
 	bool RenderCol = false;
 	bool boat = false;
-	bool outroad = false;
 	bool firing = false;
 	bool turbo = false;
+	
+	
 	void SetPlayer(Collider* collider, SDL_Texture* Tex);
 	void RenderGameObj();
 	void Update();
