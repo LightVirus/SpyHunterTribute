@@ -46,9 +46,6 @@
     <ClInclude Include="ModuleTimer.h">
       <Filter>Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Animation.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -71,6 +68,9 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Sector.h">
+      <Filter>GO</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
       <Filter>GO</Filter>
     </ClInclude>
   </ItemGroup>

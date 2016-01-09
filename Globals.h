@@ -52,7 +52,10 @@ enum item_type
 	mbike,
 	heli,
 	road,
-	sector
+	sector,
+	gun,
+	anim,
+	oil
 };
 
 /*enum controls

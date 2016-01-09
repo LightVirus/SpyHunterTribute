@@ -12,7 +12,7 @@ public:
 
 	fPoint posp;
 	fPoint localpos;
-	bool visible = false;
+	bool visible = true;
 	GameObject* parent = NULL;
 	item_type type;
 	float xoffset = 0;
