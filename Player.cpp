@@ -91,7 +91,8 @@ void Player::Update()
 
 	case Player::dead:
 		turnvel = 0;
-		LOG("DEAD");
+		roaddest = 0.0f;
+		yDest = (SCREEN_HEIGHT / 2) + 150;
 		break;
 	default:
 		break;
@@ -120,21 +121,39 @@ void Player::Update()
 		if (yspeed >= 0.5f)
 		{
 			if (!turbo)
+			{
 				yDest = (SCREEN_HEIGHT / 2) - 50;
+				roaddest = 300.0f;
+			}
+				
 			else
+			{
 				yDest = (SCREEN_HEIGHT / 2) - 200;
+				roaddest = 800.0f;
+			}
 		}
 		else
 		{
 			yDest = (SCREEN_HEIGHT / 2) + 150;
+			roaddest = 0.0f;
 		}
-		fPoint tempdes;
-		tempdes.SetToZero();
-		tempdes.y = yDest;
-		tempdes.x = posp.x;
-		posp.NextPoint(tempdes, 1 * App->timer->deltatime);
-	}
+
 	
+	}
+	fPoint tempdes;
+	tempdes.SetToZero();
+	tempdes.y = yDest;
+	tempdes.x = posp.x;
+	posp.NextPoint(tempdes, 1 * App->timer->deltatime);
+
+	fPoint temproad;
+	temproad.SetToZero();
+	temproad.y = roaddest;
+	fPoint actroad;
+	actroad.SetToZero();
+	actroad.y = roadvel;
+	actroad.NextPoint(temproad, 1 * App->timer->deltatime);
+	roadvel = actroad.y;
 	
 	
 	

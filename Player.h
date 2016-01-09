@@ -18,6 +18,8 @@ public:
 	Collider* col = NULL;
 	float turnvel = 100.0f;
 	float yspeed = 0.0f;
+	float roadvel = 500.0f;
+	float roaddest = 500.0f;
 	SDL_Rect TextureRect;
 	SDL_Rect ColRect;
 	SDL_Texture* MainTex = NULL;

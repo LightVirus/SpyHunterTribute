@@ -357,7 +357,7 @@ update_status ModuleScene::Update()
 	// Road
 	for (list<Sector>::iterator itA = SectorsList.begin(); itA != SectorsList.end(); ++itA)
 	{
-		itA->RoadUpdate(roadvel);
+		itA->RoadUpdate(MainPlayer->roadvel);
 	}
 	
 	
