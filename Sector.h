@@ -6,6 +6,7 @@
 #include "ModuleScene.h"
 #include "Road.h"
 #include "ModuleTimer.h"
+#include "ModuleRender.h"
 class Sector : public GameObject
 {
 public:
@@ -21,8 +22,8 @@ public:
 		int final = SectorEnd();
 		roads.push_back(road);
 		Road* roadp = &roads.back();
-		roadp->posp.y = final + roadp->ysize;
-		roadp->localpos.y = final + roadp->ysize;
+		roadp->posp.y = float(final + roadp->ysize);
+		roadp->localpos.y = float(final + roadp->ysize);
 	}
 	void CreateColOnSector()
 	{

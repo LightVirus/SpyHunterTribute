@@ -3,8 +3,11 @@
 #include "ModuleRender.h"
 #include "ModuleTimer.h"
 #include "ModuleInput.h"
+#include "ModuleScene.h"
+#include "Particle.h"
+#include "GameObject.h"
+#include "SDL/include/SDL.h"
 #include <sstream>
-
 
 
 Player::Player()
@@ -30,6 +33,7 @@ void Player::SetPlayer(Collider* collider, SDL_Texture* Tex)
 
 void Player::Update()
 {
+	//Movement
 	switch (ControlActualState)
 	{
 	case Player::idle:
@@ -94,8 +98,6 @@ void Player::Update()
 		roaddest = 0.0f;
 		yDest = (SCREEN_HEIGHT / 2) + 150;
 		break;
-	default:
-		break;
 	}
 	
 	//Speed and destination of x
@@ -123,18 +125,18 @@ void Player::Update()
 			if (!turbo)
 			{
 				yDest = (SCREEN_HEIGHT / 2) - 50;
-				roaddest = 300.0f;
+				roaddest = 500.0f;
 			}
 				
 			else
 			{
-				yDest = (SCREEN_HEIGHT / 2) - 200;
-				roaddest = 800.0f;
+				yDest = (SCREEN_HEIGHT / 2) - 170;
+				roaddest = 1300.0f;
 			}
 		}
 		else
 		{
-			yDest = (SCREEN_HEIGHT / 2) + 150;
+			yDest = (SCREEN_HEIGHT / 2) + 180;
 			roaddest = 0.0f;
 		}
 
@@ -155,49 +157,50 @@ void Player::Update()
 	actroad.NextPoint(temproad, 1 * App->timer->deltatime);
 	roadvel = actroad.y;
 	
+	//Gun fire
+	if (ControlActualState != dead)
+	{
+		
+			if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_REPEAT)
+			{
+				if (Pgun1 == NULL)
+				{
+					Pgun1 = App->scene->CreateParticle(0, 0, this, true, ModuleScene::gun1, false);
+					firetimer.Start();
+				}
+					
+				else
+				{
+					
+					if (firetimer.UpdateTimer())
+					{
+						App->scene->CreateParticle(posp.x, posp.y - 35, NULL, true, ModuleScene::gun2, gun2fire);
+						gun2fire = !gun2fire;
+						firetimer.Start();
+					}
+					
+				}
+			}
+			else if (App->input->GetMouseButtonDown(SDL_BUTTON_LEFT) == KEY_UP)
+			{
+				if (Pgun1 != NULL)
+				{
+					Pgun1->deleteme = true;
+					Pgun1 = NULL;
+					firetimer.Reset();
+				}
+				
+			}
+		
+	}
 	
 	
-	//Collider Rendering
+		//Collider Rendering
 	if (App->input->GetKey(SDL_SCANCODE_Y) == KEY_DOWN)
 	{
 		RenderCol = !RenderCol;
 	}
-	
-	
-	/*// DEBUG ------------------------------------------------------------------------------------
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN)
-	{
-		TextureRect = Turn1R;
-		ColRect = colturn1;
-		xoffset = -16;
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
-	{
-		TextureRect = Turn2L;
-		ColRect = colturn2;
-		xoffset = -26.5;
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN)
-	{
-		TextureRect = Turn2R;
-		ColRect = colturn2;
-		xoffset = -26.5;
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN)
-	{
-		TextureRect = Turn1L;
-		ColRect = colturn1;
-		xoffset = -16;
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
-	{
-		TextureRect = Idle;
-		ColRect = colidle;
-		xoffset = -15;
-	}*/
-	
-	
-	
+
 	posp.x = posp.x + (turnvel * App->timer->deltatime);
 	
 	//Collider

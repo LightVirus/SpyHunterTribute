@@ -68,8 +68,8 @@ public:
 		//Update Colliders
 		for (list<Collider*>::iterator itA = colliders.begin(); itA != colliders.end(); ++itA)
 		{
-			(*itA)->rect.x = posp.x + (*itA)->localrect.x;
-			(*itA)->rect.y = posp.y + (*itA)->localrect.y;
+			(*itA)->rect.x = int(posp.x + (*itA)->localrect.x);
+			(*itA)->rect.y = int(posp.y + (*itA)->localrect.y);
 		}
 	}
 

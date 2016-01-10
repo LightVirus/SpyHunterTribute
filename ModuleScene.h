@@ -1,35 +1,49 @@
 #pragma once
-#include "Module.h"
+
 #include "Application.h"
 #include "GameObject.h"
-#include "Player.h"
 #include "Road.h"
 #include "Sector.h"
+#include "Particle.h"
+#include "SDL/include/SDL.h"
 #include "SDL/include/SDL_mixer.h"
 #include "SDL/include/SDL_image.h"
 #include "SDL/include/SDL_ttf.h"
 #include <list>
 
-class Application;
+class Player;
 
 class ModuleScene : public Module
 {
 public:
 	ModuleScene();
 	~ModuleScene();
+	
+	Player MainPlayer;
+	
+	enum P_Type
+	{
+		gun1,
+		gun2,
+		oil1,
+		oil2,
+		oil3,
+		boom,
+		sharp
+	};
+	
 	bool fristtime;
 	bool Start();
 	bool CleanUp();
 	update_status Update();
 	update_status PostUpdate();
-	void const GoSound();
-	//void ControlToPlayer(controls cont, bool state);
-
-	Player* MainPlayer;
+	
 	Sector* SetNextSector(Sector* last);
+	Particle* CreateParticle(float x, float y, GameObject * parentx, bool col, P_Type type, bool gun2bool);
+
+	
 private:
 	list<Sector> SectorsList;
-	
 	//Textures
 	SDL_Texture* mainsprites = NULL;
 	SDL_Texture* RectaMedBigTEX = NULL;
@@ -74,9 +88,13 @@ private:
 	Sector SECTCurvaIzqMedEstr;
 
 	Sector SECTTEST;
+
+	//Particles
+	Particle* P1;
+
 	
 	//GameObjects
-	list<GameObject*> GOList;
+	list<Particle*> PAList;
 	
 
 

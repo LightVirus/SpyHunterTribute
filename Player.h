@@ -1,15 +1,19 @@
 #pragma once
-#include "GameObject.h"
-#include "Collider.h"
-#include "Application.h"
-#include "ModuleRender.h"
 #include "Globals.h"
+#include "GameObject.h"
+#include "Point.h"
 #include "Timer.h"
 #include "SDL/include/SDL.h"
-#include "Point.h"
 
-class Player :
-	public GameObject
+class Collider;
+class Application;
+class ModuleRender;
+class Particle;
+class ModuleScene;
+
+
+
+class Player : public GameObject
 {
 public:
 	Player();
@@ -18,8 +22,9 @@ public:
 	Collider* col = NULL;
 	float turnvel = 100.0f;
 	float yspeed = 0.0f;
-	float roadvel = 500.0f;
-	float roaddest = 500.0f;
+	float roadvel = 0.0f;
+	float roaddest = 0.0f;
+	Particle* Pgun1 = NULL;
 	SDL_Rect TextureRect;
 	SDL_Rect ColRect;
 	SDL_Texture* MainTex = NULL;
@@ -30,6 +35,7 @@ public:
 	SDL_Rect colturn1;
 	SDL_Rect deadrect;
 	Timer deadtimer;
+	Timer firetimer;
 	fPoint colOffset;
 	float yDest;
 	
@@ -39,6 +45,7 @@ public:
 	bool boat = false;
 	bool firing = false;
 	bool turbo = false;
+	bool gun2fire = false;
 	
 	
 	void SetPlayer(Collider* collider, SDL_Texture* Tex);

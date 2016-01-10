@@ -31,5 +31,17 @@ public:
 		return timerended;
 
 	}
+	void Reset()
+	{
+		timerstart = 0;
+		timepast = -1;
+		timerended = false;
+	}
+	void Start()
+	{
+		timerstart = SDL_GetTicks();
+		timepast = 0;
+		timerended = false;
+	}
 };
 

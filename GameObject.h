@@ -1,5 +1,4 @@
 #pragma once
-#include "Animation.h"
 #include "Globals.h"
 #include "Point.h"
 #include <vector>

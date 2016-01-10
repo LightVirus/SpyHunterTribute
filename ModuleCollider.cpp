@@ -6,6 +6,9 @@
 #include "SDL/include/SDL.h"
 #include <list>
 
+using namespace std;
+
+
 
 
 
@@ -77,6 +80,11 @@ Collider* ModuleCollider::CreateCol(SDL_Rect box, item_type type, GameObject * p
 		pointer->color.b = 128;
 		break;
 	case sector:
+		break;
+	case gun:
+		pointer->color.r = 255;
+		pointer->color.g = 51;
+		pointer->color.b = 153;
 		break;
 	default:
 		break;

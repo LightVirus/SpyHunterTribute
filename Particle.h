@@ -5,38 +5,66 @@
 #include "ModuleRender.h"
 #include "Globals.h"
 #include "Timer.h"
+#include "ModuleTimer.h"
+#include "ModuleCollider.h"
 #include "SDL/include/SDL.h"
 #include "Point.h"
+#include <vector>
 class Particle :
 	public GameObject
 {
 private:
-	float current_frame = 0.0f;
+	
 public:
+
 	Particle(){}
 	~Particle(){}
-	
+	SDL_Texture* MainTex;
+	item_type coltype;
+	Timer deadtime;
+	float lifetime;
 	Collider* col = NULL;
 	bool loop = false;
 	float vel = 0.0f;
+	float current_frame = 0.0f;
 	std::vector<SDL_Rect> frames;
-	Particle* CreateParticle(float x, float y, float offx, float offy, item_type typ, float speed, GameObject* parentx, Collider* colx)
+	
+	void CreateParticle(SDL_Texture* Tex, item_type typ, item_type coltyp, float speed, float life, bool loopx)
 	{
-		localpos.x = x;
-		localpos.y = y;
-		xoffset = offx;
-		yoffset = offy;
+		MainTex = Tex;
 		type = typ;
 		vel = speed;
-		parent = parentx;
-		col = colx;
+		lifetime = life;
+		loop = loopx;
+		coltype = coltyp;
+
 	}
+	
+	void CreateParticle(float x, float y, GameObject* parentx, bool colx)
+	{
+		localpos.x = x;
+		posp.x = x;
+		localpos.y = y;
+		posp.y = y;
+		parent = parentx;
+		if (colx)
+		{
+			SDL_Rect temp = { 0,0,0,0 };
+			col = App->collider->CreateCol(temp, coltype, this);
+		}
+	}
+	
+	
 	void Update()
 	{
+		if (lifetime > 0.0f && deadtime.timerstart == 0.0f)
+		{
+			deadtime.createtimer(lifetime);
+		}
 		switch (type)
 		{
 		case gun:
-
+			posp.y += vel;
 			break;
 		case anim:
 			if (parent != NULL)
@@ -50,24 +78,43 @@ public:
 				posp.y = localpos.y;
 			}
 			
-			if (frames.size > 1)
+			if (frames.size() > 1)
 			{
-				if(current_frame < frames.size())
+				if (current_frame < frames.size())
 					current_frame += vel;
-				else if (current_frame >= frames.size() && loop)
-					current_frame = 0.0f;
+				if ((int)current_frame >= frames.size() && loop)
+				{
+					current_frame = 0.0f;	
+				}
+					
 			}
 			break;
 		case oil:
 			break;
 		}
-		
+		if (deadtime.timerstart > 0.0f)
+			deadtime.UpdateTimer();
+		if (deadtime.timerended)
+		{
+			deleteme = true;
+		}
+		xoffset = (frames[current_frame].w / 2.0f) * -1;
 		if (col != NULL)
 		{
 			col->rect.w = frames[current_frame].w;
 			col->rect.h = frames[current_frame].h;
 			col->rect.x = posp.x - (col->rect.w / 2);
-			col->rect.y = posp.y;
+			col->rect.y = posp.y + yoffset;
+		}
+
+	}
+	
+	
+	void RenderGameObj()
+	{
+		if (MainTex != NULL)
+		{
+			App->renderer->Blit(MainTex, posp.x + xoffset, posp.y + yoffset, &frames[current_frame]);
 		}
 	}
 

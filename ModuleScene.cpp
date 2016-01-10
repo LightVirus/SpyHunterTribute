@@ -1,3 +1,4 @@
+
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleScene.h"
@@ -8,17 +9,9 @@
 #include "ModuleSound.h"
 #include "ModuleTimer.h"
 #include "ModuleCollider.h"
-#include "GameObject.h"
-#include "Player.h"
-#include "Road.h"
-#include "Sector.h"
 #include <string>
 #include <sstream>
 #include <list>
-#include "SDL/include/SDL.h"
-#include "SDL/include/SDL_mixer.h"
-#include "SDL/include/SDL_image.h"
-
 
 using namespace std;
 
@@ -276,13 +269,12 @@ bool ModuleScene::Start()
 	
 	SECTTEST.SetGameObj(ROAD_X, 0, 0, 0, true, road, false);
 	
-
+	
 
 	//Player
-	GOList.push_back(MainPlayer = new Player());
-	MainPlayer->SetGameObj(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, -15, 0, true, player, false);
+	MainPlayer.SetGameObj(SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 2) + 180, -15, 0, true, player, false);
 
-	MainPlayer->SetPlayer(App->collider->CreateCol(MainPlayer->colidle, player, MainPlayer), mainsprites);
+	MainPlayer.SetPlayer(App->collider->CreateCol(MainPlayer.colidle, player, &MainPlayer), mainsprites);
 
 
 	
@@ -299,11 +291,12 @@ bool ModuleScene::Start()
 
 bool ModuleScene::CleanUp()
 {
-	for (list<GameObject*>::iterator itA = GOList.begin(); itA != GOList.end(); ++itA)
+	
+	for (list<Particle*>::iterator itA = PAList.begin(); itA != PAList.end();)
 	{
-		RELEASE(*itA);
+		itA = PAList.erase(itA);
 	}
-	GOList.clear();
+	PAList.clear();
 	for (list<Sector>::iterator itA = SectorsList.begin(); itA != SectorsList.end();)
 	{
 		itA = SectorsList.erase(itA);
@@ -330,6 +323,9 @@ update_status ModuleScene::Update()
 		{
 			itA->CreateColOnSector();
 		}
+		MainPlayer.firetimer.endtime = 50;
+
+		//HOla
 	}
 	
 	// Create Sectors and delete them
@@ -357,12 +353,18 @@ update_status ModuleScene::Update()
 	// Road
 	for (list<Sector>::iterator itA = SectorsList.begin(); itA != SectorsList.end(); ++itA)
 	{
-		itA->RoadUpdate(MainPlayer->roadvel);
+		itA->RoadUpdate(MainPlayer.roadvel);
 	}
 	
 	
 	// Player
-	MainPlayer->Update();
+	MainPlayer.Update();
+	
+	//Particles
+	for (list<Particle*>::iterator itA = PAList.begin(); itA != PAList.end(); ++itA)
+	{
+		(*itA)->Update();
+	}
 	
 	
 	// RenderGO
@@ -370,10 +372,31 @@ update_status ModuleScene::Update()
 	{
 		itA->RenderGameObj();
 	}
-	MainPlayer->RenderGameObj();
+	MainPlayer.RenderGameObj();
+	for (list<Particle*>::iterator itA = PAList.begin(); itA != PAList.end(); ++itA)
+	{
+		(*itA)->RenderGameObj();
+	}
+	
+	for (list<Particle*>::iterator itA = PAList.begin(); itA != PAList.end();)
+	{
+		if ((*itA)->deleteme)
+		{
+			if ((*itA)->col != NULL)
+			{
+				(*itA)->col->deleteme = true;
+				(*itA)->col->parent = NULL;
+			}
+			RELEASE (*itA);
+			itA = PAList.erase(itA);
+
+		}
+		else
+			itA++;
+	}
 	
 	// Render Colliders
-	if(MainPlayer->RenderCol)
+	if(MainPlayer.RenderCol)
 		App->collider->RenderCol();
 
 	// Render UI
@@ -396,14 +419,10 @@ update_status ModuleScene::Update()
 
 update_status ModuleScene::PostUpdate()
 {
-	MainPlayer->PostUpdate();
+	MainPlayer.PostUpdate();
 	return UPDATE_CONTINUE;
 }
 
-void const ModuleScene::GoSound()
-{
-	App->sound->PlaySoundE(effect1);
-}
 
 Sector * ModuleScene::SetNextSector(Sector* last)
 {
@@ -439,23 +458,39 @@ Sector * ModuleScene::SetNextSector(Sector* last)
 	return nullptr;
 }
 
-/*void ModuleScene::ControlToPlayer(controls cont, bool state)
+Particle * ModuleScene::CreateParticle(float x, float y, GameObject * parentx, bool col, P_Type type, bool gun2bool)
 {
-	switch (cont)
+	SDL_Rect temp;
+	PAList.push_back(P1 = new Particle());
+	switch (type)
 	{
-	case Cnoone:
+	case gun1:
+		P1->CreateParticle(mainsprites, anim, gun, 0.3f, 0, true);
+		P1->CreateParticle(x, y, parentx, col);
+		P1->frames.push_back(temp = { 212,230,14,32 });
+		P1->frames.push_back(temp = { 122,222,14,32 });
+		P1->yoffset = -30;
 		break;
-	case Crigth:
-	{
-		MainPlayer->derecha = state;
+	case gun2:
+		P1->CreateParticle(mainsprites, gun, gun, -10, 0.5, true);
+		P1->CreateParticle(x, y, parentx, col);
+		P1->frames.push_back(temp = { 149,230,10,22 });
+		P1->frames.push_back(temp = { 189,238,10,22 });
+		P1->current_frame = gun2bool;
+		break;
+	case oil1:
+		break;
+	case oil2:
+		break;
+	case oil3:
+		break;
+	case sharp:
+		break;
+	case boom:
 		break;
 	}
-		
-	case Cleft:
-	{
-		MainPlayer->izquierda = state;
-		break;
-	}
-		
-	}
-}*/
+	
+
+	return P1;
+}
+
