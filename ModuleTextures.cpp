@@ -88,15 +88,28 @@ SDL_Texture* const ModuleTextures::Load(const char* path)
 
 TTF_Font* const ModuleTextures::LoadFont(const char* path, int size)
 {
+	
 	TTF_Font* font = TTF_OpenFont(path, size);
+	if (font == NULL)
+	{
+		LOG("Could not load font with path: %s. TTF_Load: %s", path, TTF_GetError());
+	}
 	fonts.push_back(font);
 	return font;
 }
 
 SDL_Texture* ModuleTextures::Font2Texture(TTF_Font* font, const char* text, SDL_Color color)
 {
-	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, text, color);
-	SDL_Texture* Message = SDL_CreateTextureFromSurface(App->renderer->renderer, surfaceMessage);
+	if (font != NULL)
+	{
+		SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, text, color);
+		SDL_Texture* Message = SDL_CreateTextureFromSurface(App->renderer->renderer, surfaceMessage);
+		return Message;
+	}
+	else
+	{
+		LOG("Error on reading a previusly loaded font");
+	}
 	
-	return Message;
+	
 }

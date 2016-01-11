@@ -17,7 +17,7 @@ Player::Player()
 	 Turn1R = { 101,263,32,43 };
 	 Turn1L = { 101,307,32,43 };
 	 colturn1 = { 0,0,32,43 };
-	 deadrect = { 365,0,32,32 };
+	 deadrect = { 0,365,32,32 };
 }
 
 
@@ -94,11 +94,18 @@ void Player::Update()
 		break;
 
 	case Player::dead:
+		if (!deadbool)
+		{
+			App->scene->CreateParticle(0, 0, this, false, ModuleScene::boom, false);
+			deadbool = true;
+		}
 		turnvel = 0;
 		roaddest = 0.0f;
 		yDest = (SCREEN_HEIGHT / 2) + 150;
+		TextureRect = deadrect;
 		break;
 	}
+	
 	
 	//Speed and destination of x
 	if (ControlActualState != dead)
@@ -191,7 +198,11 @@ void Player::Update()
 				}
 				
 			}
-		
+
+			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
+			{
+
+			}
 	}
 	
 	
@@ -202,6 +213,18 @@ void Player::Update()
 	}
 
 	posp.x = posp.x + (turnvel * App->timer->deltatime);
+	if (posp.x < 216)
+	{
+		posp.x = 216;
+		TextureRect = Idle;
+	}
+		
+	if (posp.x > 663)
+	{
+		posp.x = 663;
+		TextureRect = Idle;
+	}
+		
 	
 	//Collider
 	col->rect = ColRect;

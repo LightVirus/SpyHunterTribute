@@ -43,7 +43,7 @@ public:
 	bool Collastframe = false;
 	bool RenderCol = false;
 	bool boat = false;
-	bool firing = false;
+	bool deadbool = false;
 	bool turbo = false;
 	bool gun2fire = false;
 	

@@ -81,10 +81,16 @@ public:
 			if (frames.size() > 1)
 			{
 				if (current_frame < frames.size())
-					current_frame += vel;
+					current_frame += vel * App->timer->deltatime;
 				if ((int)current_frame >= frames.size() && loop)
 				{
 					current_frame = 0.0f;	
+				}
+				else if ((int)current_frame >= frames.size() && !loop)
+				{
+					vel = 0.0f;
+					current_frame = frames.size() - 0.1f;
+					deleteme = true;
 				}
 					
 			}

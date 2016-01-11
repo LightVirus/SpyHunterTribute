@@ -325,7 +325,7 @@ update_status ModuleScene::Update()
 		}
 		MainPlayer.firetimer.endtime = 50;
 
-		//HOla
+		//Hola
 	}
 	
 	// Create Sectors and delete them
@@ -465,7 +465,7 @@ Particle * ModuleScene::CreateParticle(float x, float y, GameObject * parentx, b
 	switch (type)
 	{
 	case gun1:
-		P1->CreateParticle(mainsprites, anim, gun, 0.3f, 0, true);
+		P1->CreateParticle(mainsprites, anim, gun, 20.0f, 0, true);
 		P1->CreateParticle(x, y, parentx, col);
 		P1->frames.push_back(temp = { 212,230,14,32 });
 		P1->frames.push_back(temp = { 122,222,14,32 });
@@ -487,6 +487,13 @@ Particle * ModuleScene::CreateParticle(float x, float y, GameObject * parentx, b
 	case sharp:
 		break;
 	case boom:
+		P1->CreateParticle(mainsprites, anim, null, 10.0f, 0, false);
+		P1->CreateParticle(x, y, parentx, col);
+		P1->frames.push_back(temp = { 184,275,37,34 });
+		P1->frames.push_back(temp = { 225,275,37,34 });
+		P1->frames.push_back(temp = { 265,275,37,34 });
+		P1->frames.push_back(temp = { 305,275,37,34 });
+		P1->frames.push_back(temp = { 343,275,37,34 });
 		break;
 	}
 	
