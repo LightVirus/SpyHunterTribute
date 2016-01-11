@@ -25,6 +25,7 @@ public:
 	float roadvel = 0.0f;
 	float roaddest = 0.0f;
 	Particle* Pgun1 = NULL;
+	Particle* Poil1 = NULL;
 	SDL_Rect TextureRect;
 	SDL_Rect ColRect;
 	SDL_Texture* MainTex = NULL;
@@ -35,9 +36,11 @@ public:
 	SDL_Rect colturn1;
 	SDL_Rect deadrect;
 	Timer deadtimer;
+	Timer resspawn;
 	Timer firetimer;
+	Timer oiltimer;
 	fPoint colOffset;
-	float yDest;
+	float yDest = 0.0f;
 	
 	bool Colthisframe = false;
 	bool Collastframe = false;
@@ -46,6 +49,7 @@ public:
 	bool deadbool = false;
 	bool turbo = false;
 	bool gun2fire = false;
+	int lifes = -1;
 	
 	
 	void SetPlayer(Collider* collider, SDL_Texture* Tex);
@@ -59,7 +63,7 @@ public:
 		idle,
 		turnrigth,
 		turnleft,
-		dead
+		dead,
 	};
 
 

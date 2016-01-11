@@ -302,6 +302,17 @@ bool ModuleScene::CleanUp()
 		itA = SectorsList.erase(itA);
 	}
 	SectorsList.clear();
+	for (list<Particle*>::iterator itA = PAList.begin(); itA != PAList.end();)
+	{
+			if ((*itA)->col != NULL)
+			{
+				(*itA)->col->deleteme = true;
+				(*itA)->col->parent = NULL;
+			}
+			delete (*itA);
+			itA = PAList.erase(itA);
+	}
+	PAList.clear();
 	return true;
 }
 
@@ -324,6 +335,7 @@ update_status ModuleScene::Update()
 			itA->CreateColOnSector();
 		}
 		MainPlayer.firetimer.endtime = 50;
+		MainPlayer.oiltimer.endtime = 30;
 
 		//Hola
 	}
@@ -372,10 +384,19 @@ update_status ModuleScene::Update()
 	{
 		itA->RenderGameObj();
 	}
-	MainPlayer.RenderGameObj();
+
 	for (list<Particle*>::iterator itA = PAList.begin(); itA != PAList.end(); ++itA)
 	{
-		(*itA)->RenderGameObj();
+		if ((*itA)->earlyrender)
+			(*itA)->RenderGameObj();
+	}
+	
+	MainPlayer.RenderGameObj();
+	
+	for (list<Particle*>::iterator itA = PAList.begin(); itA != PAList.end(); ++itA)
+	{
+		if(!(*itA)->earlyrender)
+			(*itA)->RenderGameObj();
 	}
 	
 	for (list<Particle*>::iterator itA = PAList.begin(); itA != PAList.end();)
@@ -433,26 +454,26 @@ Sector * ModuleScene::SetNextSector(Sector* last)
 	switch (last->type)
 	{
 	case big:
-		if (random > 0 && random <= 6)
+		if (random > 0 && random <= 4)
 			return next = &SECTRectaBig;
-		if (random > 6 && random <= 10)
+		if (random > 4 && random <= 10)
 			return next = &SECTCambioBigEstr;
 	case estr:
-		if (random > 0 && random <= 6)
+		if (random > 0 && random <= 4)
 			return next = &SECTRectaMedEstr;
-		if (random > 6 && random <= 8)
+		if (random > 4 && random <= 7)
 			return next = &SECTCurvaMedDerEstr;
-		if (random > 8 && random <= 10)
+		if (random > 7 && random <= 10)
 			return next = &SECTCurvaMedIzqEstr;
 	case estrder:
-		if (random > 0 && random <= 6)
+		if (random > 0 && random <= 4)
 			return next = &SECTRectaDerEstr;
-		if (random > 6 && random <= 10)
+		if (random > 4 && random <= 10)
 			return next = &SECTCurvaDerMedEstr;
 	case estrizq:
-		if (random > 0 && random <= 6)
+		if (random > 0 && random <= 4)
 			return next = &SECTRectaIzqEstr;
-		if (random > 6 && random <= 10)
+		if (random > 4 && random <= 10)
 			return next = &SECTCurvaIzqMedEstr;
 	}
 	return nullptr;
@@ -479,10 +500,15 @@ Particle * ModuleScene::CreateParticle(float x, float y, GameObject * parentx, b
 		P1->current_frame = gun2bool;
 		break;
 	case oil1:
+		P1->CreateParticle(mainsprites, anim, null, 0.0f, 0, false);
+		P1->CreateParticle(x, y, parentx, col);
+		P1->frames.push_back(temp = { 3,230,32,25 });
 		break;
 	case oil2:
-		break;
-	case oil3:
+		P1->CreateParticle(mainsprites, oil, oil, 10, 0.5, false);
+		P1->CreateParticle(x, y, parentx, col);
+		P1->frames.push_back(temp = { 83,223,32,32 });
+		P1->earlyrender = true;
 		break;
 	case sharp:
 		break;

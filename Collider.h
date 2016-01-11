@@ -14,5 +14,6 @@ public:
 	SDL_Rect rect;
 	SDL_Color color;
 	bool deleteme;
+	bool cancollide = true;
 };
 

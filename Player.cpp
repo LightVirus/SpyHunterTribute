@@ -12,12 +12,13 @@
 
 Player::Player()
 {
-	 Idle = { 138,256,30,44 };
-	 colidle = { 0,0,26,46 };
-	 Turn1R = { 101,263,32,43 };
-	 Turn1L = { 101,307,32,43 };
-	 colturn1 = { 0,0,32,43 };
-	 deadrect = { 0,365,32,32 };
+	Idle = { 138,256,30,44 };
+	colidle = { 0,0,26,46 };
+	Turn1R = { 101,263,32,43 };
+	Turn1L = { 101,307,32,43 };
+	colturn1 = { 0,0,32,43 };
+	deadrect = { 0,365,32,32 };
+	resspawn.endtime = 4000;
 }
 
 
@@ -50,21 +51,21 @@ void Player::Update()
 		break;
 
 	case Player::turnrigth:
-		
+
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP)
 		{
 			ControlActualState = idle;
 			break;
 		}
-			
-		if (turnvel < 0)
-			turnvel = 0;
-		turnvel = turnvel + 1000 * App->timer->deltatime;
-		if (turnvel > 10000)
-			turnvel = 10000;
-
-		if (turnvel > 500)
+		if (posp.y < (SCREEN_HEIGHT / 2) + 150)
 		{
+			if (turnvel < 0)
+				turnvel = 0;
+			turnvel = turnvel + 2000 * App->timer->deltatime;
+			if (turnvel > 10000)
+				turnvel = 10000;
+
+
 			TextureRect = Turn1R;
 			ColRect = colturn1;
 			xoffset = -16;
@@ -73,24 +74,27 @@ void Player::Update()
 		break;
 
 	case Player::turnleft:
-		
+
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP)
 		{
 			ControlActualState = idle;
 			break;
 		}
-		if (turnvel > 0)
-			turnvel = 0;
-		turnvel = turnvel - 1000 * App->timer->deltatime;
-		if (turnvel < -10000)
-			turnvel = -10000;
-
-		if (turnvel < -500)
+		if (posp.y < (SCREEN_HEIGHT / 2) + 150)
 		{
+			if (turnvel > 0)
+				turnvel = 0;
+			turnvel = turnvel - 2000 * App->timer->deltatime;
+			if (turnvel < -10000)
+				turnvel = -10000;
+
+
 			TextureRect = Turn1L;
 			ColRect = colturn1;
 			xoffset = -16;
 		}
+		
+		
 		break;
 
 	case Player::dead:
@@ -98,19 +102,48 @@ void Player::Update()
 		{
 			App->scene->CreateParticle(0, 0, this, false, ModuleScene::boom, false);
 			deadbool = true;
+			col->cancollide = false;
+			resspawn.Start();
+		}
+		
+		if (Poil1 != NULL)
+		{
+			Poil1->deleteme = true;
+			Poil1 = NULL;
+		}
+		if (Pgun1 != NULL)
+		{
+			Pgun1->deleteme = true;
+			Pgun1 = NULL;
 		}
 		turnvel = 0;
 		roaddest = 0.0f;
 		yDest = (SCREEN_HEIGHT / 2) + 150;
 		TextureRect = deadrect;
+		if (resspawn.UpdateTimer())
+		{
+			deadbool = false;
+			posp.x = SCREEN_WIDTH / 2;
+			ControlActualState = idle;
+			resspawn.Start();
+			deadtimer.Reset();
+		}
 		break;
+	}
+	if (!deadbool && resspawn.timepast != -1)
+	{
+		if (resspawn.UpdateTimer())
+		{
+			col->cancollide = true;
+			resspawn.Reset();
+		}
 	}
 	
 	
 	//Speed and destination of x
 	if (ControlActualState != dead)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN)
+		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
 		{
 			turbo = !turbo;
 		}
@@ -135,11 +168,12 @@ void Player::Update()
 				roaddest = 500.0f;
 			}
 				
-			else
+			else if (posp.y < (SCREEN_HEIGHT / 2) + 150)
 			{
 				yDest = (SCREEN_HEIGHT / 2) - 170;
 				roaddest = 1300.0f;
 			}
+			
 		}
 		else
 		{
@@ -198,9 +232,34 @@ void Player::Update()
 				}
 				
 			}
-
+			//Oil fire
 			if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_REPEAT)
 			{
+				if (Poil1 == NULL)
+				{
+					Poil1 = App->scene->CreateParticle(0, 30, this, false, ModuleScene::oil1, false);
+					oiltimer.Start();
+				}
+
+				else
+				{
+
+					if (oiltimer.UpdateTimer())
+					{
+						App->scene->CreateParticle(posp.x, posp.y + 35, NULL, true, ModuleScene::oil2, false);
+						oiltimer.Start();
+					}
+
+				}
+			}
+			else if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_UP)
+			{
+				if (Poil1 != NULL)
+				{
+					Poil1->deleteme = true;
+					Poil1 = NULL;
+					oiltimer.Reset();
+				}
 
 			}
 	}

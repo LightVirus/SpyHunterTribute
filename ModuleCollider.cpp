@@ -32,15 +32,20 @@ void ModuleCollider::CheckAllCol()
 				if (itA->parent->type == road && itB->parent->type == road) {}
 				else
 				{
-					if (SDL_HasIntersection(&itA->rect, &itB->rect))
+					if (&itA->cancollide && &itB->cancollide)
 					{
-						itA->parent->OnCollisionEnter(itB->parent);
+						if (SDL_HasIntersection(&itA->rect, &itB->rect))
+						{
+							itA->parent->OnCollisionEnter(itB->parent);
+						}
 					}
+					
 				}
 			}
 		}
 	}
 }
+
 
 Collider* ModuleCollider::CreateCol(SDL_Rect box, item_type type, GameObject * parent)
 {
@@ -119,7 +124,8 @@ void ModuleCollider::RenderCol()
 {
 	for (list<Collider>::iterator itA = Colliders.begin(); itA != Colliders.end(); ++itA)
 	{
-		App->renderer->BlitCollider(itA->color, itA->rect);
+		if(itA->cancollide)
+			App->renderer->BlitCollider(itA->color, itA->rect);
 	}
 }
 

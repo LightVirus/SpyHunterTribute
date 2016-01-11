@@ -111,5 +111,8 @@
     <ClCompile Include="Player.cpp">
       <Filter>GO</Filter>
     </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>GO</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

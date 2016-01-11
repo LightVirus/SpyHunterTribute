@@ -16,7 +16,6 @@ public:
 	std::list<Collider> Colliders;
 
 	void CheckAllCol();
-
 	
 
 
