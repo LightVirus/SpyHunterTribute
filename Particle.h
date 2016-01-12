@@ -29,6 +29,7 @@ public:
 	Collider* col = NULL;
 	bool loop = false;
 	bool earlyrender = false;
+	bool lastrender = false;
 	float vel = 0.0f;
 	float current_frame = 0.0f;
 	std::vector<SDL_Rect> frames;

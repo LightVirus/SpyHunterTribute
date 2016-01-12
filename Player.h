@@ -26,6 +26,9 @@ public:
 	float roaddest = 0.0f;
 	Particle* Pgun1 = NULL;
 	Particle* Poil1 = NULL;
+	Particle* god1 = NULL;
+	Particle* god2 = NULL;
+
 	SDL_Rect TextureRect;
 	SDL_Rect ColRect;
 	SDL_Texture* MainTex = NULL;
@@ -39,6 +42,7 @@ public:
 	Timer resspawn;
 	Timer firetimer;
 	Timer oiltimer;
+	Timer roadsound;
 	fPoint colOffset;
 	float yDest = 0.0f;
 	
@@ -49,6 +53,7 @@ public:
 	bool deadbool = false;
 	bool turbo = false;
 	bool gun2fire = false;
+	bool godmode = false;
 	int lifes = -1;
 	
 	

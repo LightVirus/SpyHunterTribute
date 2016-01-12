@@ -72,9 +72,9 @@ Mix_Chunk* const ModuleSound::LoadSoundE(const char* path)
 	return sonido;
 }
 
-void const ModuleSound::PlayMusic(Mix_Music* musica)
+void const ModuleSound::PlayMusic(Mix_Music* musica, int loopint)
 {
-	if (Mix_PlayingMusic() == 0)
+	//if (Mix_PlayingMusic() == 0)
 	{
 		LOG("Musica a tope");
 		Mix_PlayMusic(musica, -1);

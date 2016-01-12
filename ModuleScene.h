@@ -29,7 +29,8 @@ public:
 		oil2,
 		oil3,
 		boom,
-		sharp
+		sharp,
+		god
 	};
 	
 	bool fristtime;
@@ -41,9 +42,18 @@ public:
 	Sector* SetNextSector(Sector* last);
 	Particle* CreateParticle(float x, float y, GameObject * parentx, bool col, P_Type type, bool gun2bool);
 
+	//Sounds
+	Mix_Chunk* boomSE = NULL;
+	Mix_Chunk* gunSE = NULL;
+	Mix_Chunk* roadoutSE = NULL;
+
+	//Music
+	Mix_Music* music1 = NULL;
+	Mix_Music* deadmusic = NULL;
 	
 private:
 	list<Sector> SectorsList;
+	
 	//Textures
 	SDL_Texture* mainsprites = NULL;
 	SDL_Texture* RectaMedBigTEX = NULL;
@@ -55,15 +65,15 @@ private:
 	SDL_Texture* CurvaIzqMedEstrTEX = NULL;
 	SDL_Texture* CurvaMedDerEstrTEX = NULL;
 	SDL_Texture* CurvaMedIzqEstrTEX = NULL;
+	SDL_Texture* godTEX = NULL;
 	SDL_Texture* mainui = NULL;
+	SDL_Texture* godtext = NULL;
 	TTF_Font* MainFont = NULL;
 
-	//Music
-	Mix_Music* music1 = NULL;
+	
+	
 
-	//Sounds
-	Mix_Chunk* effect1 = NULL;
-	Mix_Chunk* effect2 = NULL;
+	
 
 	//Road
 	Road RectaMedBig;

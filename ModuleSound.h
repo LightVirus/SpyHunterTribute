@@ -17,7 +17,7 @@ public:
 	bool CleanUp();
 	Mix_Music* const LoadMusic(const char* path);
 	Mix_Chunk* const LoadSoundE(const char* path);
-	void const PlayMusic(Mix_Music* musica);
+	void const PlayMusic(Mix_Music* musica, int loopint);
 	void const PlaySoundE(Mix_Chunk* sound);
 	
 

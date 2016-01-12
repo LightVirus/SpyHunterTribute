@@ -4,6 +4,7 @@
 #include "ModuleTimer.h"
 #include "ModuleInput.h"
 #include "ModuleScene.h"
+#include "ModuleSound.h"
 #include "Particle.h"
 #include "GameObject.h"
 #include "SDL/include/SDL.h"
@@ -18,7 +19,9 @@ Player::Player()
 	Turn1L = { 101,307,32,43 };
 	colturn1 = { 0,0,32,43 };
 	deadrect = { 0,365,32,32 };
-	resspawn.endtime = 4000;
+	resspawn.endtime = 7600;
+	roadsound.endtime = 100;
+	resspawn.Reset();
 }
 
 
@@ -104,6 +107,7 @@ void Player::Update()
 			deadbool = true;
 			col->cancollide = false;
 			resspawn.Start();
+			App->sound->PlayMusic(App->scene->deadmusic ,-1);
 		}
 		
 		if (Poil1 != NULL)
@@ -127,6 +131,7 @@ void Player::Update()
 			ControlActualState = idle;
 			resspawn.Start();
 			deadtimer.Reset();
+			App->sound->PlayMusic(App->scene->music1, -1);
 		}
 		break;
 	}
@@ -270,6 +275,31 @@ void Player::Update()
 	{
 		RenderCol = !RenderCol;
 	}
+		//God Mode
+	if (App->input->GetKey(SDL_SCANCODE_G) == KEY_DOWN)
+	{
+		godmode = !godmode;
+	}
+	if (godmode)
+	{
+		if (god1 == NULL)
+		{
+			god1 = App->scene->CreateParticle(100, 30, NULL, false, ModuleScene::god, false);
+			god2 = App->scene->CreateParticle(SCREEN_WIDTH - 100, 30, NULL, false, ModuleScene::god, false);
+			col->cancollide = false;
+		}
+	}
+	else
+	{
+		if (god1 != NULL)
+		{
+			god1->deleteme = true;
+			god2->deleteme = true;
+			god1 = NULL;
+			god2 = NULL;
+			col->cancollide = true;
+		}
+	}
 
 	posp.x = posp.x + (turnvel * App->timer->deltatime);
 	if (posp.x < 216)
@@ -305,19 +335,34 @@ void Player::OnCollisionEnter(GameObject * ColWith)
 	switch (ColWith->type)
 	{
 	case road:
-		if (CollisionState != road)
+		
+		if (ControlActualState != dead)
 		{
-			deadtimer.createtimer(0.75);
-			CollisionState = road;
-		}
-		else
-		{
-			deadtimer.UpdateTimer();
-			if (deadtimer.timerended)
+			if (CollisionState != road)
 			{
-				ControlActualState = dead;
+				roadsound.Start();
+				App->sound->PlaySoundE(App->scene->roadoutSE);
+				deadtimer.createtimer(0.75);
+				CollisionState = road;
+			}
+			else
+			{
+				if (roadsound.UpdateTimer())
+				{
+					App->sound->PlaySoundE(App->scene->roadoutSE);
+					roadsound.Start();
+				}
+
+				deadtimer.UpdateTimer();
+				if (deadtimer.timerended)
+				{
+					deadtimer.Reset();
+					roadsound.Reset();
+					ControlActualState = dead;
+				}
 			}
 		}
+		
 		
 
 	

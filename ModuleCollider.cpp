@@ -32,7 +32,7 @@ void ModuleCollider::CheckAllCol()
 				if (itA->parent->type == road && itB->parent->type == road) {}
 				else
 				{
-					if (&itA->cancollide && &itB->cancollide)
+					if (itA->cancollide != false && itB->cancollide != false)
 					{
 						if (SDL_HasIntersection(&itA->rect, &itB->rect))
 						{

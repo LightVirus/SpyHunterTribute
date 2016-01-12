@@ -43,11 +43,21 @@ bool ModuleScene::Start()
 	CurvaIzqMedEstrTEX = App->textures->Load("Game/Images/road/CurvaIzqMedEstr.png");
 	CurvaMedDerEstrTEX = App->textures->Load("Game/Images/road/CurvaMedDerEstr.png");
 	CurvaMedIzqEstrTEX = App->textures->Load("Game/Images/road/CurvaMedIzqEstr.png");
+	godTEX = App->textures->Load("Game/Images/godsprite.png");
 	
-	music1 = App->sound->LoadMusic("Game/music.ogg");
-	MainFont = App->textures->LoadFont("Game/mainfont.ttf", 24);
+
+	
+	music1 = App->sound->LoadMusic("Game/Sound/maintheme.ogg");
+	deadmusic = App->sound->LoadMusic("Game/Sound/deadmusic.ogg");
+	boomSE = App->sound->LoadSoundE("Game/Sound/boomSE.ogg");
+	gunSE = App->sound->LoadSoundE("Game/Sound/gunSE.ogg");
+	roadoutSE = App->sound->LoadSoundE("Game/Sound/roadoutSE.ogg");
+
+	
+
+	MainFont = App->textures->LoadFont("Game/mainfont.ttf", 32);
 	Mix_VolumeMusic(50);
-	App->sound->PlayMusic(music1);
+	App->sound->PlayMusic(music1,0);
 	
 	//Set Roads
 	RectaMedBig.SetGameObj(ROAD_X, 0, 0, 0, true, road, false);
@@ -278,7 +288,11 @@ bool ModuleScene::Start()
 
 
 	
-	
+	stringstream godmodetext;
+	godmodetext.str("");
+	godmodetext << "GOD MODE";
+	SDL_Color White = { 255, 255, 255 };
+	godtext = App->textures->Font2Texture(MainFont, godmodetext.str().c_str(), White);
 	
 	
 	
@@ -395,7 +409,7 @@ update_status ModuleScene::Update()
 	
 	for (list<Particle*>::iterator itA = PAList.begin(); itA != PAList.end(); ++itA)
 	{
-		if(!(*itA)->earlyrender)
+		if(!(*itA)->earlyrender && !(*itA)->lastrender)
 			(*itA)->RenderGameObj();
 	}
 	
@@ -423,6 +437,14 @@ update_status ModuleScene::Update()
 	// Render UI
 	App->renderer->Blit(mainui, 0, 0, NULL);
 
+	for (list<Particle*>::iterator itA = PAList.begin(); itA != PAList.end(); ++itA)
+	{
+		if ((*itA)->lastrender)
+			(*itA)->RenderGameObj();
+	}
+	//God mode text
+	if(MainPlayer.godmode)
+		App->renderer->Blit(godtext, SCREEN_WIDTH /2 - 85, 20, NULL);
 	// FPS
 	stringstream timeText;
 	timeText.str("");
@@ -498,6 +520,7 @@ Particle * ModuleScene::CreateParticle(float x, float y, GameObject * parentx, b
 		P1->frames.push_back(temp = { 149,230,10,22 });
 		P1->frames.push_back(temp = { 189,238,10,22 });
 		P1->current_frame = gun2bool;
+		App->sound->PlaySoundE(gunSE);
 		break;
 	case oil1:
 		P1->CreateParticle(mainsprites, anim, null, 0.0f, 0, false);
@@ -520,7 +543,38 @@ Particle * ModuleScene::CreateParticle(float x, float y, GameObject * parentx, b
 		P1->frames.push_back(temp = { 265,275,37,34 });
 		P1->frames.push_back(temp = { 305,275,37,34 });
 		P1->frames.push_back(temp = { 343,275,37,34 });
+		App->sound->PlaySoundE(boomSE);
 		break;
+	case god:
+		P1->CreateParticle(godTEX, anim, null, 20.0f, 0, true);
+		P1->CreateParticle(x, y, parentx, col);
+		P1->frames.push_back(temp = { 0, 0, 141, 200 });
+		P1->frames.push_back(temp = { 142, 0, 141, 200 });
+		P1->frames.push_back(temp = { 284, 0, 141, 200 });
+		P1->frames.push_back(temp = { 0, 201, 141, 200 });
+		P1->frames.push_back(temp = { 142, 201, 141, 200 });
+		P1->frames.push_back(temp = { 284, 201, 141, 200 });
+		P1->frames.push_back(temp = { 426, 0, 141, 200 });
+		P1->frames.push_back(temp = { 568, 0 ,141, 200 });
+		P1->frames.push_back(temp = { 426, 201, 141, 200 });
+		P1->frames.push_back(temp = { 710, 0, 141, 200 });
+		P1->frames.push_back(temp = { 568, 201, 141, 200 });
+		P1->frames.push_back(temp = { 852, 0, 141, 200 });
+		P1->frames.push_back(temp = { 710, 201, 141, 200 });
+		P1->frames.push_back(temp = { 852, 201, 141, 200 });
+		P1->frames.push_back(temp = { 0, 402, 141, 200 });
+		P1->frames.push_back(temp = { 142, 402, 141, 200 });
+		P1->frames.push_back(temp = { 0, 603, 141, 200 });
+		P1->frames.push_back(temp = { 284, 402, 141, 200 });
+		P1->frames.push_back(temp = { 142, 603, 141, 200 });
+		P1->frames.push_back(temp = { 426, 402, 141, 200 });
+		P1->frames.push_back(temp = { 284, 603, 141, 200 });
+		P1->frames.push_back(temp = { 568, 402, 141, 200 });
+		P1->frames.push_back(temp = { 426, 603, 141, 200 });
+		P1->frames.push_back(temp = { 710, 402, 141, 200 });
+		P1->lastrender = true;
+		break;
+
 	}
 	
 
