@@ -73,6 +73,9 @@
     <ClInclude Include="Particle.h">
       <Filter>GO</Filter>
     </ClInclude>
+    <ClInclude Include="Car.h">
+      <Filter>GO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -112,6 +115,9 @@
       <Filter>GO</Filter>
     </ClCompile>
     <ClCompile Include="Particle.cpp">
+      <Filter>GO</Filter>
+    </ClCompile>
+    <ClCompile Include="Car.cpp">
       <Filter>GO</Filter>
     </ClCompile>
   </ItemGroup>

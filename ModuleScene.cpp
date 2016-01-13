@@ -306,11 +306,6 @@ bool ModuleScene::Start()
 bool ModuleScene::CleanUp()
 {
 	
-	for (list<Particle*>::iterator itA = PAList.begin(); itA != PAList.end();)
-	{
-		itA = PAList.erase(itA);
-	}
-	PAList.clear();
 	for (list<Sector>::iterator itA = SectorsList.begin(); itA != SectorsList.end();)
 	{
 		itA = SectorsList.erase(itA);
@@ -323,7 +318,7 @@ bool ModuleScene::CleanUp()
 				(*itA)->col->deleteme = true;
 				(*itA)->col->parent = NULL;
 			}
-			delete (*itA);
+			RELEASE (*itA);
 			itA = PAList.erase(itA);
 	}
 	PAList.clear();
@@ -476,26 +471,26 @@ Sector * ModuleScene::SetNextSector(Sector* last)
 	switch (last->type)
 	{
 	case big:
-		if (random > 0 && random <= 4)
+		if (random > 0 && random <= 3)
 			return next = &SECTRectaBig;
-		if (random > 4 && random <= 10)
+		if (random > 3 && random <= 10)
 			return next = &SECTCambioBigEstr;
 	case estr:
-		if (random > 0 && random <= 4)
+		if (random > 0 && random <= 3)
 			return next = &SECTRectaMedEstr;
-		if (random > 4 && random <= 7)
+		if (random > 3 && random <= 6)
 			return next = &SECTCurvaMedDerEstr;
-		if (random > 7 && random <= 10)
+		if (random > 6 && random <= 10)
 			return next = &SECTCurvaMedIzqEstr;
 	case estrder:
-		if (random > 0 && random <= 4)
+		if (random > 0 && random <= 3)
 			return next = &SECTRectaDerEstr;
-		if (random > 4 && random <= 10)
+		if (random > 3 && random <= 10)
 			return next = &SECTCurvaDerMedEstr;
 	case estrizq:
-		if (random > 0 && random <= 4)
+		if (random > 0 && random <= 3)
 			return next = &SECTRectaIzqEstr;
-		if (random > 4 && random <= 10)
+		if (random > 3 && random <= 10)
 			return next = &SECTCurvaIzqMedEstr;
 	}
 	return nullptr;

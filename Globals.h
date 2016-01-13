@@ -92,5 +92,6 @@ enum SectorType
 #define VSYNC true
 #define FPSLOCK false
 #define FPSMAX 50.0f
-#define TITLE "Spy Hunter"
+#define TITLE "SpyHunter by Unai Lujambio"
+
 
