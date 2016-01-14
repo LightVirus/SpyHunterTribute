@@ -43,9 +43,11 @@ public:
 	Timer firetimer;
 	Timer oiltimer;
 	Timer roadsound;
+	Timer collidedtime;
 	fPoint colOffset;
 	float yDest = 0.0f;
-	
+	float colldirx = 0.0f;
+	float colldiry = 0.0f;
 	bool Colthisframe = false;
 	bool Collastframe = false;
 	bool RenderCol = false;

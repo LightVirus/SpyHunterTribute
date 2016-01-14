@@ -91,6 +91,11 @@ Collider* ModuleCollider::CreateCol(SDL_Rect box, item_type type, GameObject * p
 		pointer->color.g = 51;
 		pointer->color.b = 153;
 		break;
+	case enemyweapon:
+		pointer->color.r = 255;
+		pointer->color.g = 51;
+		pointer->color.b = 255;
+		break;
 	default:
 		break;
 	}

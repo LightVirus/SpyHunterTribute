@@ -596,6 +596,8 @@ Particle * ModuleScene::CreateParticle(float x, float y, GameObject * parentx, b
 		P1->earlyrender = true;
 		break;
 	case sharp:
+		P1->CreateParticle(mainsprites, anim, null, 0, 0, false);
+		P1->CreateParticle(x, y, parentx, col);
 		break;
 	case boom:
 		P1->CreateParticle(mainsprites, anim, null, 10.0f, 0, false);

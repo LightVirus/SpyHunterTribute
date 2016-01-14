@@ -55,7 +55,8 @@ enum item_type
 	sector,
 	gun,
 	anim,
-	oil
+	oil,
+	enemyweapon
 };
 
 enum ControlState
@@ -79,6 +80,7 @@ enum SectorType
 
 enum ColDir
 {
+	nulldir,
 	updir,
 	rightdir,
 	leftdir,

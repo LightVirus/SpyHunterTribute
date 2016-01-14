@@ -85,12 +85,13 @@ public:
 				LOG("Collision desde izquierda!");
 				return from = leftdir;
 			}
-			else if (ColWith->rect.x >(posp.x + (mycol->rect.w / 2) - 5))
+			if (ColWith->rect.x > (posp.x + (mycol->rect.w / 2) - 5))
 			{
 				LOG("Collision desde derecha!");
 				return from = rightdir;
 			}
 		}
+		return nulldir;
 	}
 
 };

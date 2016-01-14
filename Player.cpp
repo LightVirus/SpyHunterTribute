@@ -22,11 +22,13 @@ Player::Player()
 	resspawn.endtime = 7600;
 	roadsound.endtime = 100;
 	resspawn.Reset();
+	collidedtime.endtime = 150;
 }
 
 
 Player::~Player()
 {
+	
 }
 
 void Player::SetPlayer(Collider* collider, SDL_Texture* Tex)
@@ -134,6 +136,18 @@ void Player::Update()
 			App->sound->PlayMusic(App->scene->music1, -1);
 		}
 		break;
+	case collided:
+		turnvel = 0.0f;
+		posp.x = posp.x + colldirx;
+		posp.y = posp.y + colldiry;
+		if (collidedtime.UpdateTimer())
+		{
+			ControlActualState = idle;
+			collidedtime.Reset();
+			colldirx = 0.0f;
+			colldiry = 0.0f;
+		}
+		break;
 	}
 	if (!deadbool && resspawn.timepast != -1)
 	{
@@ -146,7 +160,7 @@ void Player::Update()
 	
 	
 	//Speed and destination of x
-	if (ControlActualState != dead)
+	if (ControlActualState != dead && ControlActualState != collided)
 	{
 		if (App->input->GetMouseButtonDown(SDL_BUTTON_RIGHT) == KEY_DOWN)
 		{
@@ -185,9 +199,10 @@ void Player::Update()
 			yDest = (SCREEN_HEIGHT / 2) + 180;
 			roaddest = 0.0f;
 		}
-
+		
 	
 	}
+	
 	fPoint tempdes;
 	tempdes.SetToZero();
 	tempdes.y = yDest;
@@ -202,6 +217,21 @@ void Player::Update()
 	actroad.y = roadvel;
 	actroad.NextPoint(temproad, 1 * App->timer->deltatime);
 	roadvel = actroad.y;
+
+	posp.x = posp.x + (turnvel * App->timer->deltatime);
+	if (posp.x < 216)
+	{
+		posp.x = 216;
+		TextureRect = Idle;
+	}
+
+	if (posp.x > 663)
+	{
+		posp.x = 663;
+		TextureRect = Idle;
+	}
+	
+	
 	
 	//Gun fire
 	if (ControlActualState != dead)
@@ -301,18 +331,7 @@ void Player::Update()
 		}
 	}
 
-	posp.x = posp.x + (turnvel * App->timer->deltatime);
-	if (posp.x < 216)
-	{
-		posp.x = 216;
-		TextureRect = Idle;
-	}
-		
-	if (posp.x > 663)
-	{
-		posp.x = 663;
-		TextureRect = Idle;
-	}
+	
 		
 	
 	//Collider
@@ -342,7 +361,7 @@ void Player::OnCollisionEnter(Collider * ColWith)
 			{
 				roadsound.Start();
 				App->sound->PlaySoundE(App->scene->roadoutSE);
-				deadtimer.createtimer(0.75);
+				deadtimer.createtimer(0.50);
 				CollisionState = road;
 			}
 			else
@@ -364,8 +383,41 @@ void Player::OnCollisionEnter(Collider * ColWith)
 		}
 		break;
 	case car:
-		ColDir from;
-		from = CollisionDir(ColWith, col);
+	case mbike:
+		if (ControlActualState != collided)
+		{
+			colldirx = 0;
+			colldiry = 0;
+			ColDir from;
+			from = CollisionDir(ColWith, col);
+			if (from != nulldir)
+			{
+				ControlActualState = collided;
+				collidedtime.Start();
+				switch (from)
+				{
+				case updir:
+					colldiry = 250;
+					break;
+				case rightdir:
+					colldirx = -250;
+					break;
+				case leftdir:
+					colldirx = 250;
+					break;
+				case downdir:
+					colldiry = -250;
+					break;
+				default:
+					break;
+				}
+				colldirx = colldirx * App->timer->deltatime;
+				colldiry = colldiry * App->timer->deltatime;
+			}
+			
+		}
+		
+		break;
 		
 		
 

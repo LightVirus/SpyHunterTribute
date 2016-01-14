@@ -37,7 +37,11 @@ Car::Car(float x, float y, bool colx, SDL_Texture* maintexx, item_type typex)
 	if (colx)
 		col = App->collider->CreateCol(colrect, car, this);
 	carstate = idle;
-		
+	collidedtime.endtime = 150;
+
+	App->scene->CreateParticle(-20, -10, this, true, ModuleScene::sharp, true);
+	App->scene->CreateParticle(20, -10, this, true, ModuleScene::sharp, false);
+
 }
 
 
@@ -129,17 +133,26 @@ void Car::Update()
 			destspeed = 1 * App->timer->deltatime;
 			break;
 		}
-
-		default:
-			break;
 		}
+		dest.x = posp.x;
 		posp.NextPoint(dest, destspeed);
 		if (posp.x > 715 || posp.x < 155)
 			deleteme = true;
 		if (posp.y < -230 || posp.y > 830)
 			deleteme = true;
-
+		break;
 	}
+	case collided:
+		posp.x = posp.x + colldirx;
+		posp.y = posp.y + colldiry;
+		if (collidedtime.UpdateTimer())
+		{
+			carstate = idle;
+			collidedtime.Reset();
+			colldirx = 0.0f;
+			colldiry = 0.0f;
+		}
+		break;
 	default:
 		break;
 	}
@@ -162,13 +175,14 @@ void Car::OnCollisionEnter(Collider * ColWith)
 {
 	if (carstate == idle)
 	{
-		if (ColWith->parent->type == gun || ColWith->parent->type == oil)
+		switch (ColWith->parent->type)
 		{
+		case gun:
+		case oil:
 			carstate = dead;
 			App->scene->CreateParticle(0, 0, this, false, ModuleScene::boom, false);
-		}
-		else if (ColWith->parent->type == road)
-		{
+			break;
+		case road:
 			if (type == car)
 			{
 				carturn = -carturn;
@@ -184,7 +198,43 @@ void Car::OnCollisionEnter(Collider * ColWith)
 					bikex += -10;
 				}
 			}
+			break;
+		case car:
+		case mbike:
+		case player:
+			colldirx = 0;
+			colldiry = 0;
+			ColDir from;
+			from = CollisionDir(ColWith, col);
+			if (from != nulldir)
+				{
+					carstate = collided;
+					collidedtime.Start();
+					switch (from)
+					{
+					case updir:
+						colldiry = 250;
+						break;
+					case rightdir:
+						colldirx = -250;
+						break;
+					case leftdir:
+						colldirx = 250;
+						break;
+					case downdir:
+						colldiry = -250;
+						break;
+					default:
+						break;
+					}
+					colldirx = colldirx * App->timer->deltatime;
+					colldiry = colldiry * App->timer->deltatime;
+				}
+			break;
+		default:
+			break;
 		}
+
 	}
 	else if (carstate == collided)
 	{
