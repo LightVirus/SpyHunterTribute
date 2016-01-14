@@ -11,7 +11,7 @@ public:
 	~Collider(){}
 
 	
-	
+	item_type type;
 	GameObject* parent;
 	SDL_Rect localrect;
 	SDL_Rect rect;

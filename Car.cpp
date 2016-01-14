@@ -21,6 +21,10 @@ Car::Car(float x, float y, bool colx, SDL_Texture* maintexx, item_type typex)
 		colrect = { 0,0,25,41 };
 		carturn = 30;
 		xoffset = -13;
+		CarParticle1 = App->scene->CreateParticle(-15, 10, this, true, ModuleScene::sharp, true);
+		CarParticle2 = App->scene->CreateParticle(15, 10, this, true, ModuleScene::sharp, false);
+		CarParticle1->col->type = enemyweapon;
+		CarParticle2->col->type = enemyweapon;
 	}
 	else if (type == mbike)
 	{
@@ -39,8 +43,7 @@ Car::Car(float x, float y, bool colx, SDL_Texture* maintexx, item_type typex)
 	carstate = idle;
 	collidedtime.endtime = 150;
 
-	App->scene->CreateParticle(-20, -10, this, true, ModuleScene::sharp, true);
-	App->scene->CreateParticle(20, -10, this, true, ModuleScene::sharp, false);
+	
 
 }
 
@@ -49,6 +52,13 @@ Car::~Car()
 {
 	col->deleteme = true;
 	col = NULL;
+	if (CarParticle1 != NULL)
+	{
+		CarParticle1->deleteme = true;
+		CarParticle2->deleteme = true;
+		CarParticle1 = NULL;
+		CarParticle2 = NULL;
+	}
 }
 
 void Car::Update()
@@ -113,6 +123,13 @@ void Car::Update()
 	case dead:
 	{
 		int roaddest = (int)App->scene->MainPlayer.roaddest;
+		if (CarParticle1 != NULL)
+		{
+			CarParticle1->deleteme = true;
+			CarParticle2->deleteme = true;
+			CarParticle1 = NULL;
+			CarParticle2 = NULL;
+		}
 		switch (roaddest)
 		{
 		case 0:
@@ -181,6 +198,10 @@ void Car::OnCollisionEnter(Collider * ColWith)
 		case oil:
 			carstate = dead;
 			App->scene->CreateParticle(0, 0, this, false, ModuleScene::boom, false);
+			if (type == car)
+				App->scene->Points += 200;
+			else if (type == mbike)
+				App->scene->Points -= 500;
 			break;
 		case road:
 			if (type == car)
@@ -242,6 +263,10 @@ void Car::OnCollisionEnter(Collider * ColWith)
 		{
 			carstate = dead;
 			App->scene->CreateParticle(0, 0, this, false, ModuleScene::boom, false);
+			if (type == car)
+				App->scene->Points += 400;
+			else if (type == mbike)
+				App->scene->Points -= 500;
 		}
 	}
 	

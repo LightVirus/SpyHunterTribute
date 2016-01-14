@@ -55,7 +55,8 @@ bool ModuleScene::Start()
 
 	
 
-	MainFont = App->textures->LoadFont("Game/mainfont.ttf", 32);
+	MainFont32 = App->textures->LoadFont("Game/mainfont.ttf", 32);
+	MainFont22 = App->textures->LoadFont("Game/mainfont.ttf", 22);
 	Mix_VolumeMusic(50);
 	App->sound->PlayMusic(music1,0);
 	
@@ -292,7 +293,7 @@ bool ModuleScene::Start()
 	godmodetext.str("");
 	godmodetext << "GOD MODE";
 	SDL_Color White = { 255, 255, 255 };
-	godtext = App->textures->Font2Texture(MainFont, godmodetext.str().c_str(), White);
+	godtext = App->textures->Font2Texture(MainFont32, godmodetext.str().c_str(), White);
 	
 	
 	
@@ -505,18 +506,37 @@ update_status ModuleScene::Update()
 		if ((*itA)->lastrender)
 			(*itA)->RenderGameObj();
 	}
+	
 	//God mode text
 	if(MainPlayer.godmode)
 		App->renderer->Blit(godtext, SCREEN_WIDTH /2 - 85, 20, NULL);
+	
 	// FPS
 	stringstream timeText;
 	timeText.str("");
 	timeText << "FPS: " << App->timer->finalfps;
 	SDL_Color White = { 255, 255, 255 };
-	SDL_Texture* fpstexture = App->textures->Font2Texture(MainFont, timeText.str().c_str(), White);
+	SDL_Texture* fpstexture = App->textures->Font2Texture(MainFont22, timeText.str().c_str(), White);
 	App->renderer->Blit(fpstexture, 6, SCREEN_HEIGHT - 25, NULL);
 	SDL_DestroyTexture(fpstexture);
 	timeText.clear();
+	
+	// Points
+	if(MainPlayer.turbo && !MainPlayer.deadbool)
+		Points += 150 * App->timer->deltatime;
+	else if (!MainPlayer.deadbool)
+		Points += 125 * App->timer->deltatime;
+	
+	
+	stringstream pText;
+	pText.str("");
+	pText << "Points: " << Points;
+	SDL_Texture* pTexture = App->textures->Font2Texture(MainFont22, pText.str().c_str(), White);
+	int tempsize = 0;
+	SDL_QueryTexture(pTexture, NULL, NULL, &tempsize, NULL);
+	App->renderer->Blit(pTexture, (SCREEN_WIDTH / 2) - (tempsize / 2), 50, NULL);
+	SDL_DestroyTexture(pTexture);
+	pText.clear();
 	
 	if (fristtime)
 		fristtime = false;
@@ -596,8 +616,13 @@ Particle * ModuleScene::CreateParticle(float x, float y, GameObject * parentx, b
 		P1->earlyrender = true;
 		break;
 	case sharp:
-		P1->CreateParticle(mainsprites, anim, null, 0, 0, false);
+		P1->CreateParticle(mainsprites, anim, enemyweapon, 0, 0, false);
 		P1->CreateParticle(x, y, parentx, col);
+		if(gun2bool)
+			P1->frames.push_back(temp = { 245,235,14,27 });
+		else
+			P1->frames.push_back(temp = { 261,235,14,27 });
+		P1->earlyrender = true;
 		break;
 	case boom:
 		P1->CreateParticle(mainsprites, anim, null, 10.0f, 0, false);
@@ -638,7 +663,6 @@ Particle * ModuleScene::CreateParticle(float x, float y, GameObject * parentx, b
 		P1->frames.push_back(temp = { 710, 402, 141, 200 });
 		P1->lastrender = true;
 		break;
-
 	}
 	
 

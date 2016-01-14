@@ -106,6 +106,7 @@ void Player::Update()
 		if (!deadbool)
 		{
 			App->scene->CreateParticle(0, 0, this, false, ModuleScene::boom, false);
+			App->scene->Points -= 5000;
 			deadbool = true;
 			col->cancollide = false;
 			resspawn.Start();
@@ -131,6 +132,7 @@ void Player::Update()
 			deadbool = false;
 			posp.x = SCREEN_WIDTH / 2;
 			ControlActualState = idle;
+			resspawn.endtime = 2000;
 			resspawn.Start();
 			deadtimer.Reset();
 			App->sound->PlayMusic(App->scene->music1, -1);
@@ -154,6 +156,7 @@ void Player::Update()
 		if (resspawn.UpdateTimer())
 		{
 			col->cancollide = true;
+			resspawn.endtime = 7600;
 			resspawn.Reset();
 		}
 	}
@@ -351,7 +354,7 @@ void Player::PostUpdate()
 void Player::OnCollisionEnter(Collider * ColWith)
 {
 	Colthisframe = true;
-	switch (ColWith->parent->type)
+	switch (ColWith->type)
 	{
 	case road:
 		
@@ -361,6 +364,7 @@ void Player::OnCollisionEnter(Collider * ColWith)
 			{
 				roadsound.Start();
 				App->sound->PlaySoundE(App->scene->roadoutSE);
+				App->scene->Points -= 125 * App->timer->deltatime;
 				deadtimer.createtimer(0.50);
 				CollisionState = road;
 			}
@@ -369,6 +373,7 @@ void Player::OnCollisionEnter(Collider * ColWith)
 				if (roadsound.UpdateTimer())
 				{
 					App->sound->PlaySoundE(App->scene->roadoutSE);
+					App->scene->Points -= 125 * App->timer->deltatime;
 					roadsound.Start();
 				}
 
@@ -417,6 +422,9 @@ void Player::OnCollisionEnter(Collider * ColWith)
 			
 		}
 		
+		break;
+	case enemyweapon:
+		ControlActualState = dead;
 		break;
 		
 		

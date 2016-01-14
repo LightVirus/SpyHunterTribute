@@ -33,6 +33,7 @@ public:
 		boom,
 		sharp,
 		god
+
 	};
 	
 	bool fristtime;
@@ -44,6 +45,8 @@ public:
 	
 	Sector* SetNextSector(Sector* last);
 	Particle* CreateParticle(float x, float y, GameObject * parentx, bool col, P_Type type, bool gun2bool);
+
+	int Points = 0;
 
 	//Sounds
 	Mix_Chunk* boomSE = NULL;
@@ -71,7 +74,8 @@ private:
 	SDL_Texture* godTEX = NULL;
 	SDL_Texture* mainui = NULL;
 	SDL_Texture* godtext = NULL;
-	TTF_Font* MainFont = NULL;
+	TTF_Font* MainFont32 = NULL;
+	TTF_Font* MainFont22 = NULL;
 
 	
 	

@@ -29,7 +29,7 @@ void ModuleCollider::CheckAllCol()
 		{
 			if (itA != itB)
 			{
-				if (itA->parent->type == road && itB->parent->type == road) {}
+				if (itA->type == road && itB->type == road) {}
 				else
 				{
 					if (itA->cancollide != false && itB->cancollide != false)
@@ -57,6 +57,7 @@ Collider* ModuleCollider::CreateCol(SDL_Rect box, item_type type, GameObject * p
 	pointer->parent = parent;
 	pointer->rect = box;
 	pointer->color.a = DEBUG_ALPHA;
+	pointer->type = parent->type;
 	switch (type)
 	{
 	case player:
