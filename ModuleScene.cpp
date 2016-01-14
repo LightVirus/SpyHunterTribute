@@ -296,7 +296,7 @@ bool ModuleScene::Start()
 	godmodetext << "GOD MODE";
 	SDL_Color White = { 255, 255, 255 };
 	godtext = App->textures->Font2Texture(MainFont32, godmodetext.str().c_str(), White);
-	
+	fristtime = true;
 	
 	
 	
@@ -360,11 +360,12 @@ update_status ModuleScene::Update()
 	// Create Sectors and delete them
 	if (SectorsList.front().posp.y > (SectorsList.front().SectorEnd() + 1300))
 	{
-		
-		SectorsList.front().DeleteSector();
-		list<Sector>::iterator it = SectorsList.begin();
-		it = SectorsList.erase(it);
-		
+		if (SectorsList.size() > 0)
+		{
+			SectorsList.front().DeleteSector();
+			list<Sector>::iterator it = SectorsList.begin();
+			it = SectorsList.erase(it);
+		}
 		Sector* nextone = SetNextSector(&SectorsList.back());
 		int nexty = (SectorsList.back().posp.y - SectorsList.back().SectorEnd());
 		SectorsList.push_back(*nextone);

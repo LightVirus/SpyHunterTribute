@@ -36,7 +36,7 @@ public:
 
 	};
 	
-	bool fristtime;
+	bool fristtime = true;
 	bool Start();
 	bool CleanUp();
 	update_status Update();
@@ -58,7 +58,7 @@ public:
 	Mix_Music* deadmusic = NULL;
 	
 private:
-	list<Sector> SectorsList;
+	
 	
 	//Textures
 	SDL_Texture* mainsprites = NULL;
@@ -117,7 +117,7 @@ private:
 	//GameObjects
 	list<Particle*> PAList;
 	list<Car*> CarList;
-	
+	list<Sector> SectorsList;
 
 
 	float x = 0.0f;
