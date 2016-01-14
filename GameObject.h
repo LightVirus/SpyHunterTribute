@@ -1,6 +1,7 @@
 #pragma once
 #include "Globals.h"
 #include "Point.h"
+#include "Collider.h"
 #include <vector>
 
 class GameObject
@@ -19,7 +20,7 @@ public:
 	bool deleteme = false;
 
 
-	virtual void OnCollisionEnter(GameObject* ColWith)
+	virtual void OnCollisionEnter(Collider* ColWith)
 	{
 
 	}
@@ -61,5 +62,35 @@ public:
 	{
 	}
 
+	ColDir CollisionDir(Collider* ColWith, Collider* mycol)
+	{
+		ColDir from;
+		if (ColWith->rect.x > (posp.x - mycol->rect.w) && ColWith->rect.x < (posp.x + (mycol->rect.w / 2)))
+		{
+			if (ColWith->rect.y <= (posp.y - ColWith->rect.h) + 5)
+			{
+				LOG("Collision desde arriba!");
+				return from = updir;
+			}
+			else if (ColWith->rect.y >= (posp.y + mycol->rect.h) - 5)
+			{
+				LOG("Collision desde abajo!");
+				return from = downdir;
+			}
+		}
+		if (ColWith->rect.y > (posp.y - ColWith->rect.h) + 5 && ColWith->rect.y < (posp.y + mycol->rect.h) - 5)
+		{
+			if (ColWith->rect.x < posp.x - (mycol->rect.w / 2) - ColWith->rect.w + 5)
+			{
+				LOG("Collision desde izquierda!");
+				return from = leftdir;
+			}
+			else if (ColWith->rect.x >(posp.x + (mycol->rect.w / 2) - 5))
+			{
+				LOG("Collision desde derecha!");
+				return from = rightdir;
+			}
+		}
+	}
 
 };

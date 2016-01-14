@@ -110,6 +110,6 @@ SDL_Texture* ModuleTextures::Font2Texture(TTF_Font* font, const char* text, SDL_
 	{
 		LOG("Error on reading a previusly loaded font");
 	}
-	
+	return nullptr;
 	
 }

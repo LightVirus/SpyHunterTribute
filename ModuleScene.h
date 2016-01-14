@@ -5,6 +5,8 @@
 #include "Road.h"
 #include "Sector.h"
 #include "Particle.h"
+#include "Car.h"
+#include "Timer.h"
 #include "SDL/include/SDL.h"
 #include "SDL/include/SDL_mixer.h"
 #include "SDL/include/SDL_image.h"
@@ -38,6 +40,7 @@ public:
 	bool CleanUp();
 	update_status Update();
 	update_status PostUpdate();
+	Timer spawntimer;
 	
 	Sector* SetNextSector(Sector* last);
 	Particle* CreateParticle(float x, float y, GameObject * parentx, bool col, P_Type type, bool gun2bool);
@@ -105,6 +108,7 @@ private:
 	
 	//GameObjects
 	list<Particle*> PAList;
+	list<Car*> CarList;
 	
 
 

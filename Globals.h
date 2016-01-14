@@ -58,15 +58,14 @@ enum item_type
 	oil
 };
 
-/*enum controls
+enum ControlState
 {
-	Cnoone,
-	Crigth,
-	Cleft,
-	Cup,
-	Cdown
-
-};*/
+	idle,
+	turnrigth,
+	turnleft,
+	dead,
+	collided
+};
 
 enum SectorType
 {
@@ -78,8 +77,18 @@ enum SectorType
 	bridge
 };
 
+enum ColDir
+{
+	updir,
+	rightdir,
+	leftdir,
+	downdir
+};
+
 // Configuration -----------
 #define SECTOR_END 2000
+#define MAX_CARS 8
+#define SPAWN_TIME 2000
 #define DEBUG_ALPHA 150
 #define SCREEN_WIDTH 880
 #define SCREEN_HEIGHT 750

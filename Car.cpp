@@ -1,28 +1,42 @@
 #include "Car.h"
 #include "ModuleScene.h"
 #include "Player.h"
+#include "Collider.h"
+#include "GameObject.h"
 
 
 Car::Car(float x, float y, bool colx, SDL_Texture* maintexx, item_type typex)
 {
+	
 	posp.x = x;
 	posp.y = y;
+	dest.x = x;
+	dest.y = y;
 	type = typex;
-	if (colx)
-		col = App->collider->CreateCol(rect, car, this);
+	maintex = maintexx;
+	
 	if (type == car)
 	{
-		rect = { 192,182,25,41 };
+		rect = { 192,182,28,44 };
 		colrect = { 0,0,25,41 };
+		carturn = 30;
+		xoffset = -13;
 	}
 	else if (type == mbike)
 	{
 		rect = { 340,180,23,32 };
 		colrect = { 0,0,19,32 };
-		xoffset = -5;
+		xoffset = -9;
+		srand(SDL_GetTicks());
+		int random = rand() % 575 + 76;
+		bikey = random;
+		srand(SDL_GetTicks());
+		random = rand() % 500 + 280;
+		bikex = random;
 	}
-		
-
+	if (colx)
+		col = App->collider->CreateCol(colrect, car, this);
+	carstate = idle;
 		
 }
 
@@ -35,45 +49,101 @@ Car::~Car()
 
 void Car::Update()
 {
-	//Calculate Y
-	int roaddest = (int)App->scene->MainPlayer.roaddest;
-	switch (roaddest)
+	switch (carstate)
 	{
-	case 0:
+	case idle:
 	{
-		dest.y = -100;
-		destspeed = 2;
-		break;
-	}
-	case 500:
-	{
+		//Calculate Y
+		int roaddest = (int)App->scene->MainPlayer.roaddest;
+		switch (roaddest)
+		{
+		case 0:
+		{
+			dest.y = -250;
+			destspeed = 0.5 * App->timer->deltatime;
+			break;
+		}
+		case 500:
+		{
+			if (type == car)
+			{
+				dest.y = App->scene->MainPlayer.posp.y;
+			}
+			else if (type == mbike)
+			{
+				dest.y = bikey;
+			}
+			destspeed = 0.25f * App->timer->deltatime;
+			break;
+		}
+		case 1300:
+		{
+			dest.y = SCREEN_HEIGHT + 150;
+			destspeed = 0.5 * App->timer->deltatime;
+			break;
+		}
+
+		default:
+			break;
+		}
+
+		//Calculate x
+		if (type == mbike)
+		{
+			dest.x = bikex;
+		}
 		if (type == car)
 		{
-			dest.y = App->scene->MainPlayer.posp.y;
+			dest.x = App->scene->MainPlayer.posp.x + carturn;
 		}
-		else if (type == mbike)
-		{
-			srand(time(NULL));
-			int random = rand() % 575 + 76;
-			dest.y = random;
-		}
-		destspeed = 0.5f;
+
+
+
+		posp.NextPoint(dest, destspeed);
+		if (posp.x > 715 || posp.x < 155)
+			deleteme = true;
+		if (posp.y < -230 || posp.y > 830)
+			deleteme = true;
 		break;
 	}
-	case 1300:
+	case dead:
 	{
-		dest.y = SCREEN_HEIGHT + 100;
-		destspeed = 2;
-		break;
+		int roaddest = (int)App->scene->MainPlayer.roaddest;
+		switch (roaddest)
+		{
+		case 0:
+		{
+			dest.y = posp.y + App->scene->MainPlayer.roadvel;
+			destspeed = 0.5 * App->timer->deltatime;
+			break;
+		}
+		case 500:
+		{
+			dest.y = SCREEN_HEIGHT + 150;
+			destspeed = 0.5f * App->timer->deltatime;
+			break;
+		}
+		case 1300:
+		{
+			dest.y = SCREEN_HEIGHT + 250;
+			destspeed = 1 * App->timer->deltatime;
+			break;
+		}
+
+		default:
+			break;
+		}
+		posp.NextPoint(dest, destspeed);
+		if (posp.x > 715 || posp.x < 155)
+			deleteme = true;
+		if (posp.y < -230 || posp.y > 830)
+			deleteme = true;
+
 	}
-	
 	default:
 		break;
 	}
-
-	//Calculate Y
-
-	posp.NextPoint(dest, destspeed);
+	
 	// Collider
 	col->rect = rect;
 	col->rect.x = posp.x - (col->rect.w / 2);
@@ -88,6 +158,42 @@ void Car::RenderGameObj()
 	}
 }
 
-void Car::OnCollisionEnter(GameObject * ColWith)
+void Car::OnCollisionEnter(Collider * ColWith)
 {
+	if (carstate == idle)
+	{
+		if (ColWith->parent->type == gun || ColWith->parent->type == oil)
+		{
+			carstate = dead;
+			App->scene->CreateParticle(0, 0, this, false, ModuleScene::boom, false);
+		}
+		else if (ColWith->parent->type == road)
+		{
+			if (type == car)
+			{
+				carturn = -carturn;
+			}
+			else if (type == mbike)
+			{
+				if (posp.x > ColWith->rect.x)
+				{
+					bikex += 10;
+				}
+				else if (posp.x < ColWith->rect.x)
+				{
+					bikex += -10;
+				}
+			}
+		}
+	}
+	else if (carstate == collided)
+	{
+		if (ColWith->parent->type == road)
+		{
+			carstate = dead;
+			App->scene->CreateParticle(0, 0, this, false, ModuleScene::boom, false);
+		}
+	}
+	
+	
 }

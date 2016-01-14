@@ -61,15 +61,9 @@ public:
 	void RenderGameObj();
 	void Update();
 	void PostUpdate();
-	void OnCollisionEnter(GameObject* ColWith);
+	void OnCollisionEnter(Collider* ColWith);
 
-	enum ControlState
-	{
-		idle,
-		turnrigth,
-		turnleft,
-		dead,
-	};
+	
 
 
 	ControlState ControlActualState = idle;

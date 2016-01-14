@@ -286,7 +286,7 @@ bool ModuleScene::Start()
 
 	MainPlayer.SetPlayer(App->collider->CreateCol(MainPlayer.colidle, player, &MainPlayer), mainsprites);
 
-
+	spawntimer.endtime = SPAWN_TIME;
 	
 	stringstream godmodetext;
 	godmodetext.str("");
@@ -322,6 +322,12 @@ bool ModuleScene::CleanUp()
 			itA = PAList.erase(itA);
 	}
 	PAList.clear();
+	for (list<Car*>::iterator itA = CarList.begin(); itA != CarList.end();)
+	{
+			RELEASE(*itA);
+			itA = CarList.erase(itA);
+	}
+	CarList.clear();
 	return true;
 }
 
@@ -345,10 +351,9 @@ update_status ModuleScene::Update()
 		}
 		MainPlayer.firetimer.endtime = 50;
 		MainPlayer.oiltimer.endtime = 30;
-
-		//Hola
+		spawntimer.Start();
+		
 	}
-	
 	// Create Sectors and delete them
 	if (SectorsList.front().posp.y > (SectorsList.front().SectorEnd() + 1300))
 	{
@@ -356,7 +361,6 @@ update_status ModuleScene::Update()
 		SectorsList.front().DeleteSector();
 		list<Sector>::iterator it = SectorsList.begin();
 		it = SectorsList.erase(it);
-		LOG("Sector borrado");
 		
 		Sector* nextone = SetNextSector(&SectorsList.back());
 		int nexty = (SectorsList.back().posp.y - SectorsList.back().SectorEnd());
@@ -370,13 +374,74 @@ update_status ModuleScene::Update()
 		
 
 	}
+	// Create and delete cars
+	for (list<Car*>::iterator itA = CarList.begin(); itA != CarList.end();)
+	{
+		if ((*itA)->deleteme)
+		{
+			RELEASE(*itA);
+			itA = CarList.erase(itA);
+			LOG("Borrado car");
+		}
+		else
+			++itA;
+	}
+	if (spawntimer.UpdateTimer())
+	{
+		spawntimer.Start();
+		if (CarList.size() < MAX_CARS)
+		{
+
+			int random = rand() % 2 + 0;
+			if (random == 1)
+			{
+				srand(SDL_GetTicks());
+				int random2 = rand() % 1 + 0;
+				if (random == 1)
+				{
+					srand(SDL_GetTicks());
+					int random3 = rand() % 500 + 280;
+					CarList.push_back(new Car(random3, -200, true, mainsprites, car));
+				}
+
+				else
+				{
+					srand(SDL_GetTicks());
+					int random4 = rand() % 500 + 280;
+					CarList.push_back(new Car(random4, 800, true, mainsprites, car));
+				}
+
+				LOG("Añadido enemigo");
+			}
+			else if (random == 0)
+			{
+				srand(SDL_GetTicks());
+				int random2 = rand() % 1 + 1;
+				if (random == 1)
+					CarList.push_back(new Car(SCREEN_WIDTH / 2, -200, true, mainsprites, mbike));
+				else
+					CarList.push_back(new Car(SCREEN_WIDTH / 2, 800, true, mainsprites, mbike));
+				LOG("Añadido civil");
+			}
+
+		}
+	}
 	
+	
+
+
+
 	// Road
 	for (list<Sector>::iterator itA = SectorsList.begin(); itA != SectorsList.end(); ++itA)
 	{
 		itA->RoadUpdate(MainPlayer.roadvel);
 	}
 	
+	//Cars
+	for (list<Car*>::iterator itA = CarList.begin(); itA != CarList.end(); ++itA)
+	{
+		(*itA)->Update();
+	}
 	
 	// Player
 	MainPlayer.Update();
@@ -399,7 +464,10 @@ update_status ModuleScene::Update()
 		if ((*itA)->earlyrender)
 			(*itA)->RenderGameObj();
 	}
-	
+	for (list<Car*>::iterator itA = CarList.begin(); itA != CarList.end(); ++itA)
+	{
+		(*itA)->RenderGameObj();
+	}
 	MainPlayer.RenderGameObj();
 	
 	for (list<Particle*>::iterator itA = PAList.begin(); itA != PAList.end(); ++itA)
@@ -464,9 +532,8 @@ update_status ModuleScene::PostUpdate()
 
 Sector * ModuleScene::SetNextSector(Sector* last)
 {
-	LOG("Añadiendo sector");
 	Sector* next = NULL;
-	srand(time(NULL));
+	srand(SDL_GetTicks());
 	int random = rand() % 10 + 1;
 	switch (last->type)
 	{

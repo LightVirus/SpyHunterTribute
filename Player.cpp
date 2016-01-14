@@ -40,7 +40,7 @@ void Player::Update()
 	//Movement
 	switch (ControlActualState)
 	{
-	case Player::idle:
+	case idle:
 		turnvel = 0;
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 			ControlActualState = turnleft;
@@ -53,7 +53,7 @@ void Player::Update()
 
 		break;
 
-	case Player::turnrigth:
+	case turnrigth:
 
 		if (App->input->GetKey(SDL_SCANCODE_D) == KEY_UP)
 		{
@@ -76,7 +76,7 @@ void Player::Update()
 
 		break;
 
-	case Player::turnleft:
+	case turnleft:
 
 		if (App->input->GetKey(SDL_SCANCODE_A) == KEY_UP)
 		{
@@ -100,7 +100,7 @@ void Player::Update()
 		
 		break;
 
-	case Player::dead:
+	case dead:
 		if (!deadbool)
 		{
 			App->scene->CreateParticle(0, 0, this, false, ModuleScene::boom, false);
@@ -329,10 +329,10 @@ void Player::PostUpdate()
 	Collastframe = Colthisframe;
 }
 
-void Player::OnCollisionEnter(GameObject * ColWith)
+void Player::OnCollisionEnter(Collider * ColWith)
 {
 	Colthisframe = true;
-	switch (ColWith->type)
+	switch (ColWith->parent->type)
 	{
 	case road:
 		
@@ -362,6 +362,10 @@ void Player::OnCollisionEnter(GameObject * ColWith)
 				}
 			}
 		}
+		break;
+	case car:
+		ColDir from;
+		from = CollisionDir(ColWith, col);
 		
 		
 

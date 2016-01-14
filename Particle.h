@@ -38,5 +38,9 @@ public:
 	void CreateParticle(float x, float y, GameObject* parentx, bool colx);
 	void Update();
 	void RenderGameObj();
+	void OnCollisionEnter(Collider* ColWith);
+	
+
+	
 };
 

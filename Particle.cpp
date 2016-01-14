@@ -119,3 +119,13 @@ void Particle::RenderGameObj()
 	}
 }
 
+void Particle::OnCollisionEnter(Collider * ColWith)
+{
+	if (type == gun)
+	{
+		if (ColWith->parent->type == car || ColWith->parent->type == mbike)
+			deleteme = true;
+	}
+	
+}
+

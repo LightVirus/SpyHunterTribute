@@ -36,7 +36,7 @@ void ModuleCollider::CheckAllCol()
 					{
 						if (SDL_HasIntersection(&itA->rect, &itB->rect))
 						{
-							itA->parent->OnCollisionEnter(itB->parent);
+							itA->parent->OnCollisionEnter(&(*itB));
 						}
 					}
 					

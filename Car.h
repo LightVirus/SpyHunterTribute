@@ -8,6 +8,7 @@
 #include "Timer.h"
 #include "Globals.h"
 #include "ModuleRender.h"
+#include "Collider.h"
 
 class Car :
 	public GameObject
@@ -18,14 +19,18 @@ public:
 	
 	fPoint dest;
 	float destspeed;
+	float carturn;
 	SDL_Texture* maintex = NULL;
 	SDL_Rect rect;
 	SDL_Rect colrect;
 	Collider* col = NULL;
+	float bikey = 0;
+	float bikex = 0;
+	ControlState carstate;
 
 	void Update();
 	void RenderGameObj();
-	void OnCollisionEnter(GameObject* ColWith);
+	void OnCollisionEnter(Collider* ColWith);
 
 };
 
