@@ -316,11 +316,6 @@ bool ModuleScene::CleanUp()
 	SectorsList.clear();
 	for (list<Particle*>::iterator itA = PAList.begin(); itA != PAList.end();)
 	{
-			if ((*itA)->col != NULL)
-			{
-				(*itA)->col->deleteme = true;
-				(*itA)->col->parent = NULL;
-			}
 			RELEASE (*itA);
 			itA = PAList.erase(itA);
 	}
