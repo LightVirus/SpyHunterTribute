@@ -280,7 +280,9 @@ bool ModuleScene::Start()
 	
 	SECTTEST.SetGameObj(ROAD_X, 0, 0, 0, true, road, false);
 	
-	
+	GearUp = { 157,323,99,40 };
+	GearLow = { 157,371,99,40 };
+
 
 	//Player
 	MainPlayer.SetGameObj(SCREEN_WIDTH / 2, (SCREEN_HEIGHT / 2) + 180, -15, 0, true, player, false);
@@ -500,6 +502,10 @@ update_status ModuleScene::Update()
 
 	// Render UI
 	App->renderer->Blit(mainui, 0, 0, NULL);
+	if (MainPlayer.turbo)
+		App->renderer->Blit(mainsprites, 391, 668, &GearUp);
+	else
+		App->renderer->Blit(mainsprites, 392, 668, &GearLow);
 
 	for (list<Particle*>::iterator itA = PAList.begin(); itA != PAList.end(); ++itA)
 	{

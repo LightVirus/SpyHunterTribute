@@ -74,6 +74,10 @@ private:
 	SDL_Texture* godTEX = NULL;
 	SDL_Texture* mainui = NULL;
 	SDL_Texture* godtext = NULL;
+	SDL_Rect GearLow;
+	SDL_Rect GearUp;
+
+	
 	TTF_Font* MainFont32 = NULL;
 	TTF_Font* MainFont22 = NULL;
 
